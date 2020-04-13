@@ -1,5 +1,3 @@
-#Terraform for Azure AKS
-
 # Jenkins X Azure Module
 
 ![Terraform Version](https://img.shields.io/badge/tf-%3E%3D0.12.0-blue.svg)
