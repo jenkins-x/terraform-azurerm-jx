@@ -2,19 +2,23 @@ variable "cluster_name" {
   type = string
 }
 variable "node_count" {
-  type = string
+  type = number
+  default = 1
 }
 variable "node_size" {
   type = string
+  default = "Standard_B2ms"
 }
 variable "dns_prefix" {
   type = string
 }
 variable "cluster_version" {
   type = string
+  default = "1.15.11"
 }
 variable "location" {
   type = string
+  default = "australiaeast"
 }
 variable "network_resource_group" {
   type = string
@@ -27,9 +31,11 @@ variable "dns_resource_group" {
 }
 variable "vnet_cidr" {
   type = string
+  default = "10.8.0.0/16"
 }
 variable "subnet_cidr" {
   type = string
+  default = "10.8.0.0/24"
 }
 variable "network_name" {
   type = string

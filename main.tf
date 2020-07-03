@@ -36,18 +36,18 @@ provider "kubernetes" {
 
 resource "azurerm_resource_group" "network" {
   name     = local.network_resource_group
-  location = local.location
+  location = var.location
 }
 
 resource "azurerm_resource_group" "cluster" {
   name     = local.cluster_resource_group
-  location = local.location
+  location = var.location
 }
 
 resource "azurerm_resource_group" "dns" {
   count    = var.external_dns_enabled ? 1 : 0
   name     = local.dns_resource_group
-  location = local.location
+  location = var.location
 }
 
 
@@ -58,12 +58,12 @@ resource "azurerm_resource_group" "dns" {
 module "cluster" {
   source                 = "./modules/cluster"
   cluster_name           = local.cluster_name
-  node_count             = local.node_count
-  node_size              = local.node_size
+  node_count             = var.node_count
+  node_size              = var.node_size
   vnet_subnet_id         = module.vnet.subnet_id
   dns_prefix             = local.dns_prefix
-  cluster_version        = local.cluster_version
-  location               = local.location
+  cluster_version        = var.cluster_version
+  location               = var.location
   resource_group_name    = azurerm_resource_group.cluster.name
   network_resource_group = local.network_resource_group
   jenkins_x_namespace    = var.jenkins_x_namespace
@@ -76,11 +76,11 @@ module "cluster" {
 module "vnet" {
   source         = "./modules/vnet"
   resource_group = azurerm_resource_group.network.name
-  vnet_cidr      = local.vnet_cidr
-  subnet_cidr    = local.subnet_cidr
+  vnet_cidr      = var.vnet_cidr
+  subnet_cidr    = var.subnet_cidr
   network_name   = local.network_name
   subnet_name    = local.subnet_name
-  location       = local.location
+  location       = var.location
 }
 
 // ----------------------------------------------------------------------------
