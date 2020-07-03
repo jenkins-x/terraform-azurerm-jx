@@ -89,7 +89,7 @@ module "vnet" {
 
 module "dns" {
   source                   = "./modules/dns"
-  resource_group_name      = azurerm_resource_group.dns[0].name
+  resource_group_name      = var.external_dns_enabled ? azurerm_resource_group.dns.0.name : ""
   apex_resource_group_name = var.apex_domain_resource_group_name
   apex_domain              = var.apex_domain
   domain_name              = local.domain_name
