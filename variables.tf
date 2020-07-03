@@ -105,6 +105,9 @@ variable "domain_name" {
   type    = string
   default = ""
 }
+variable "msi_name" {
+  type = string
+}
 variable "external_dns_enabled" {
   type    = bool
   default = false
