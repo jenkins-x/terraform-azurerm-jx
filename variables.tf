@@ -46,6 +46,9 @@ variable "apex_domain" {
 variable "domain_name" {
   type = string
 }
+variable "msi_name" {
+  type = string
+}
 variable "external_dns_enabled" {
   type    = bool
   default = false

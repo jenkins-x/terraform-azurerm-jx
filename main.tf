@@ -29,7 +29,6 @@ provider "kubernetes" {
     module.cluster.client_key,
   )
 }
-
 // ----------------------------------------------------------------------------
 // Setup Azure Resource Groups
 // ----------------------------------------------------------------------------
@@ -45,7 +44,6 @@ resource "azurerm_resource_group" "cluster" {
 }
 
 resource "azurerm_resource_group" "dns" {
-  count    = var.external_dns_enabled ? 1 : 0
   name     = local.dns_resource_group
   location = local.location
 }
@@ -67,6 +65,7 @@ module "cluster" {
   resource_group_name    = azurerm_resource_group.cluster.name
   network_resource_group = local.network_resource_group
   jenkins_x_namespace    = var.jenkins_x_namespace
+  msi_name               = local.msi_name
 }
 
 // ----------------------------------------------------------------------------
@@ -89,7 +88,7 @@ module "vnet" {
 
 module "dns" {
   source                   = "./modules/dns"
-  resource_group_name      = azurerm_resource_group.dns[0].name
+  resource_group_name      = azurerm_resource_group.dns.name
   apex_resource_group_name = var.apex_domain_resource_group_name
   apex_domain              = var.apex_domain
   domain_name              = local.domain_name

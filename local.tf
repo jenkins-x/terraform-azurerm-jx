@@ -70,6 +70,15 @@ resource "random_pet" "domain_name" {
   }
 }
 
+resource "random_pet" "msi_name" {
+  prefix    = "msi-aks"
+  separator = "-"
+  keepers = {
+    # Keep the name consistent on executions
+    msi_name = var.msi_name
+  }
+}
+
 locals {
   cluster_name           = var.cluster_name != "" ? var.cluster_name : random_pet.cluster.id
   node_count             = var.node_count != "" ? var.node_count : 1
@@ -85,4 +94,5 @@ locals {
   subnet_name            = var.subnet_name != "" ? var.subnet_name : random_pet.subnet_name.id
   dns_resource_group     = var.dns_resource_group != "" ? var.dns_resource_group : random_pet.dns_resource_group.id
   domain_name            = var.domain_name != "" ? var.domain_name : random_pet.domain_name.id
+  msi_name               = var.msi_name != "" ? var.msi_name : random_pet.msi_name.id
 }
