@@ -77,23 +77,35 @@ The following sections provide a full list of configuration in- and output varia
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| cluster\_name | Variable to provide your desired name for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
-| cluster\_version | Kubernetes version to use for the EKS cluster. | `string` | `"1.15"` | no |
-| node_count | The number of worker nodes to use for the cluster | `number` | `1` | no |
-| node_size | The size of the worker node to use for the cluster | `string` | `"Standard_B2ms"` | no |
-| dns_prefix | DNS prefix for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
-| location | The Azure region in to which to provision the cluster | `string` | `"australiaeast"` | no |
-| network_resource_group | The name of the resource group in to which to provision network resources. The script will create a random name if this is empty | `string` | `""` | no |
-| cluster_resource_group | The name of the resource group in to which to provision cluster resources. The script will create a random name if this is empty | `string` | `""` | no |
-| vnet_cidr | The CIDR of the provisioned Virtual Network in Azure in to which worker nodes are placed | `string` | `"10.8.0.0/16"` | no |
-| subnet_cidr | The CIDR of the provisioned  subnet within the `vnet_cidr` to to which worker nodes are placed | `string` | `"10.8.0.0/24"` | no |
-| network_name | The name of the Virtual Network in Azure to be created. The script will create a random name if this is empty | `string` | `""` | no |
-| subnet_name | The name of the subnet in Azure to be created. The script will create a random name if this is empty | `string` | `""` | no |
-| dns_resource_group | The name of the resource group in to which to provision dns resources. The script will create a random name if this is empty | `string` | `""` | no |
-| domain_name | The domain for external dns to create records in. The script will create a random name if this is empty | `string` | `""` | no |
-| dns_enabled | Flag which sets whether a DNS zone is provisioned or not | `bool` | `true` | no |
 | apex_domain | The apex domain in to which to create delegation records for the `domain_name` | `string` | `""` | no |
 | apex_domain_resource_group_name | The resource group name in which the apex domain resides | `string` | `""` | no |
+| cluster\_name | Variable to provide your desired name for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
+| cluster_resource_group | The name of the resource group in to which to provision cluster resources. The script will create a random name if this is empty | `string` | `""` | no |
+| cluster\_version | Kubernetes version to use for the EKS cluster. | `string` | `"1.15"` | no |
+| container\_registry\_name | Name of container registry to provision. The script will create a random name if this is empty | `string` | `""` | no |
+| create\_registry | Flag to indicate whether an Azure Container Registry should be provisioned | `bool` | `false` | no |
+| domain_name | The domain for external dns to create records in. The script will create a random name if this is empty | `string` | `""` | no |
+| dns_enabled | Flag which sets whether a DNS zone is provisioned or not | `bool` | `false` | no |
+| dns_prefix | DNS prefix for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
+| dns_resource_group | The name of the resource group in to which to provision dns resources. The script will create a random name if this is empty | `string` | `""` | no |
+| enable\_backup | Whether or not Velero backups should be enabled | `bool` | `false` | no |
+| enable\_tls | Flag to enable TLS in the final `jx-requirements.yml` file | `bool` | `false` | no |
+| external\_dns\_enabled | Flag to enable external dns in `jx-requirerments.yml`. Requires `domain_name`, `apex_domain` and `apex_domain_resource_group_name` to be specified so the appropriate Azure DNS zone can be configured correctly.
+| jenkins\_x\_namespace | Kubernetes namespace to install Jenkins X in | `string` | `"jx"` | no |
+| lets\_encrypt\_production | Flag to determine wether or not to use the Let's Encrypt production server. | `bool` | `true` | no |
+| location | The Azure region in to which to provision the cluster | `string` | `"australiaeast"` | no |
+| network_name | The name of the Virtual Network in Azure to be created. The script will create a random name if this is empty | `string` | `""` | no |
+| network_resource_group | The name of the resource group in to which to provision network resources. The script will create a random name if this is empty | `string` | `""` | no |
+| node_count | The number of worker nodes to use for the cluster | `number` | `1` | no |
+| node_size | The size of the worker node to use for the cluster | `string` | `"Standard_B2ms"` | no |
+| registry_resource_group | Name of resource group (to provision) in which to create registry. The script will create a random name if this is empty | `string` | `""` | no |
+| subnet_cidr | The CIDR of the provisioned  subnet within the `vnet_cidr` to to which worker nodes are placed | `string` | `"10.8.0.0/24"` | no |
+| subnet_name | The name of the subnet in Azure to be created. The script will create a random name if this is empty | `string` | `""` | no |
+| tls\_email | Email used by Let's Encrypt. Required for TLS when parent\_domain is specified | `string` | `""` | no || velero\_namespace | Kubernetes namespace for Velero | `string` | `"velero"` | no |
+| velero\_namespace | Kubernetes namespace for Velero | `string` | `"velero"` | no |
+| velero\_schedule | The Velero backup schedule in cron notation to be set in the Velero Schedule CRD (see [default-backup.yaml](https://github.com/jenkins-x/jenkins-x-boot-config/blob/master/systems/velero-backups/templates/default-backup.yaml)) | `string` | `"0 * * * *"` | no |
+| velero\_ttl | The the lifetime of a velero backup to be set in the Velero Schedule CRD (see [default-backup.yaml](https://github.com/jenkins-x/jenkins-x-boot-config/blob/master/systems/velero-backups/templates/default-backup)) | `string` | `"720h0m0s"` | no |
+| vnet_cidr | The CIDR of the provisioned Virtual Network in Azure in to which worker nodes are placed | `string` | `"10.8.0.0/16"` | no |
 
 #### Outputs
 

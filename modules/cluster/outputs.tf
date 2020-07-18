@@ -13,3 +13,9 @@ output "client_key" {
 output "cluster_ca_certificate" {
   value = azurerm_kubernetes_cluster.aks.kube_admin_config.0.cluster_ca_certificate
 }
+output "node_resource_group" {
+  value = azurerm_kubernetes_cluster.aks.node_resource_group
+}
+output "kubelet_identity_id" {
+  value = azurerm_kubernetes_cluster.aks.kubelet_identity.0.object_id
+}
