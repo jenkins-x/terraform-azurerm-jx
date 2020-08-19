@@ -1,0 +1,22 @@
+buildPack: none
+dockerRegistryOwner: jenkinsxio
+pipelineConfig:
+  pipelines:
+    pullRequest:
+      pipeline:
+        stages:
+          - agent:
+              image: busybox
+            name: dummy
+            steps:
+              - name: echo
+                command: echo pull request pipeline not yet implemented
+    release:
+      pipeline:
+        stages:
+          - agent:
+              image: busybox
+            name: dummy
+            steps:
+              - name: echo
+                command: echo release pipeline not yet implemented
