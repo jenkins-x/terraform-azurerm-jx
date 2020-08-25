@@ -33,7 +33,7 @@ override.tf.json
 
 
 #Jenkins X specific files
-jx-requirements.yml
+jx_module/jx-requirements.yml
 kubeconfig*
 
 .DS_Store
