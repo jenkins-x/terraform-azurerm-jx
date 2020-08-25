@@ -29,3 +29,7 @@ variable "network_resource_group" {
 variable "jenkins_x_namespace" {
   type = string
 }
+variable "cluster_network_model" {
+  type    = string
+  default = "kubenet"
+}

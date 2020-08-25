@@ -13,3 +13,15 @@ variable "apex_resource_group_name" {
 variable "resource_group_name" {
   type = string
 }
+variable "jenkins_x_namespace" {
+  type = string
+}
+variable "kubelet_identity_id" {
+  type = string
+}
+variable "tenant_id" {
+  type = string
+}
+variable "subscription_id" {
+  type = string
+}

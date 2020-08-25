@@ -11,6 +11,52 @@ pipelineConfig:
             steps:
               - name: echo
                 command: echo pull request pipeline not yet implemented
+#      pipeline:
+#        agent:
+#          image: gcr.io/jenkinsxio/builder-terraform
+#        stages:
+#          - name: ci
+#            steps:
+#              - name: terraform-lint
+#                command: make
+#                args:
+#                  - lint
+#              - name: terratest
+#                command: make
+#                args:
+#                  - test
+#                env:
+#                  - name: AZURE_CLIENT_SECRET
+#                    valueFrom:
+#                      secretKeyRef:
+#                        name: azure-terraform-bdd-secret
+#                        key: AZURE_CLIENT_SECRET
+#                  - name: AZURE_SUBSCRIPTION_ID
+#                    valueFrom:
+#                      secretKeyRef:
+#                        name: azure-terraform-bdd-secret
+#                        key: AZURE_SUBSCRIPTION_ID
+#                  - name: AZURE_CLIENT_ID
+#                    valueFrom:
+#                      secretKeyRef:
+#                        name: azure-terraform-bdd-secret
+#                        key: AZURE_CLIENT_ID
+#                  - name: AZURE_TENANT_ID
+#                    valueFrom:
+#                      secretKeyRef:
+#                        name: azure-terraform-bdd-secret
+#                        key: AZURE_TENANT_ID
+#                  - name: TFVAR_APEX_DOMAIN_NAME
+#                    valueFrom:
+#                      secretKeyRef:
+#                        name: azure-terraform-bdd-secret
+#                        key: TFVAR_APEX_DOMAIN_NAME
+#                  - name: TFVAR_APEX_DOMAIN_RESOURCE_GROUP_NAME
+#                    valueFrom:
+#                      secretKeyRef:
+#                        name: azure-terraform-bdd-secret
+#                        key: TFVAR_APEX_DOMAIN_RESOURCE_GROUP_NAME
+
     release:
       pipeline:
         stages:

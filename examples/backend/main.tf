@@ -8,6 +8,6 @@ terraform {
   }
 }
 
-module "aks-jx" {
+module "jx-aks" {
   source = "jenkins-x/aks-jx/aks"
 }
