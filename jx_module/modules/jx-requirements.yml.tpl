@@ -24,7 +24,18 @@ ingress:
     enabled: ${enable_tls}
     production: ${use_production_letsencrypt}
 kaniko: true
-secretStorage: local
+secretStorage: vault
+vault:
+%{ if external_vault }
+  url: ${vault_url}
+%{ else }
+  azure:
+    tenantId: "${vault_tenant_id}"
+    vaultName: "${vault_keyvault_name}"
+    keyName: "${vault_key_name}"
+    storageAccountName: "${vault_storage_account_name}"
+    containerName: "${vault_storage_container_name}"
+%{ endif }
 storage:
   backup:
     enabled: ${enable_backup}

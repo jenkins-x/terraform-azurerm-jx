@@ -42,6 +42,9 @@ output "container_registry_name" {
 output "tenant_id" {
   value = data.azurerm_client_config.current.tenant_id
 }
+output "vault_storage_account_key" {
+  value = module.vault.vault_storage_account_key
+}
 output "velero_namespace" {
   value = var.velero_namespace
 }
