@@ -10,12 +10,12 @@ terraform {
 // Configure providers
 // ----------------------------------------------------------------------------
 provider "azurerm" {
-  version         = ">= 2.15.0"
+  version = ">= 2.15.0"
   features {}
 }
 
 provider "azuread" {
-  version         = ">=0.11.0"
+  version = ">=0.11.0"
 }
 
 provider "kubernetes" {
@@ -73,6 +73,12 @@ resource "azurerm_resource_group" "registry" {
   location = var.location
 }
 
+resource "azurerm_resource_group" "vault" {
+  count    = local.external_vault ? 0 : 1
+  name     = local.vault_resource_group
+  location = var.location
+}
+
 // ----------------------------------------------------------------------------
 // Setup Azure Cluster
 // ----------------------------------------------------------------------------
@@ -117,7 +123,7 @@ module "backup" {
   cluster_id      = local.cluster_id
   cluster_name    = local.cluster_name
   subscription_id = data.azurerm_client_config.current.subscription_id
-  tenant_id       = data.azurerm_client_config.current.tenant_id
+  tenant_id       = local.tenant_id
 }
 
 // ----------------------------------------------------------------------------
@@ -134,7 +140,7 @@ module "dns" {
   jenkins_x_namespace      = module.cluster.jenkins_x_namespace
   kubelet_identity_id      = module.cluster.kubelet_identity_id
   subscription_id          = data.azurerm_client_config.current.subscription_id
-  tenant_id                = data.azurerm_client_config.current.tenant_id
+  tenant_id                = local.tenant_id
 }
 
 // ----------------------------------------------------------------------------
@@ -147,6 +153,20 @@ module "registry" {
   create_registry         = var.create_registry
   container_registry_name = local.container_registry_name
   kubelet_identity_id     = module.cluster.kubelet_identity_id
+}
+
+// ----------------------------------------------------------------------------
+// Setup Vault dependencies in Azure
+// ----------------------------------------------------------------------------
+module "vault" {
+  source              = "./modules/vault"
+  location            = var.location
+  cluster_id          = local.cluster_id
+  cluster_name        = local.cluster_name
+  external_vault      = local.external_vault
+  resource_group      = local.external_vault ? "" : azurerm_resource_group.vault.0.name
+  kubelet_identity_id = module.cluster.kubelet_identity_id
+  tenant_id           = local.tenant_id
 }
 
 // ----------------------------------------------------------------------------
@@ -180,6 +200,15 @@ locals {
     // Container Registry
     create_registry = var.create_registry
     registry_name   = local.container_registry_name
+
+    // Vault
+    external_vault               = local.external_vault
+    vault_url                    = var.vault_url
+    vault_tenant_id              = local.tenant_id
+    vault_keyvault_name          = module.vault.vault_keyvault_name
+    vault_key_name               = module.vault.vault_key_name
+    vault_storage_account_name   = module.vault.vault_storage_account_name
+    vault_storage_container_name = module.vault.vault_storage_container_name
 
     version_stream_ref = var.version_stream_ref
     version_stream_url = var.version_stream_url

@@ -116,7 +116,6 @@ variable "velero_ttl" {
   default     = "720h0m0s"
 }
 
-
 // ----------------------------------------------------------------------------
 // Container Registry
 // ----------------------------------------------------------------------------
@@ -136,7 +135,19 @@ variable "registry_resource_group" {
   default     = ""
 }
 
-
+// ----------------------------------------------------------------------------
+// Vault
+// ----------------------------------------------------------------------------
+variable "vault_url" {
+  description = "URL to an external Vault instance in case Jenkins X shall not create its own system Vault"
+  type        = string
+  default     = ""
+}
+variable "vault_resource_group" {
+  description = "Resource group to create for Vault resources"
+  type        = string
+  default     = ""
+}
 
 // ----------------------------------------------------------------------------
 // jx-requirements.yml specific variables only used for template rendering
