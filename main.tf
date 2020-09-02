@@ -3,14 +3,14 @@
 //
 // ----------------------------------------------------------------------------
 terraform {
-  required_version = ">= 0.12.25"
+  required_version = ">= 0.12.17"
 }
 
 // ----------------------------------------------------------------------------
 // Configure providers
 // ----------------------------------------------------------------------------
 provider "azurerm" {
-  version = ">= 2.15.0"
+  version = ">= 2.25.0"
   features {}
 }
 
@@ -19,7 +19,7 @@ provider "azuread" {
 }
 
 provider "kubernetes" {
-  version          = ">= 1.11.0"
+  version          = ">= 1.12.0"
   load_config_file = false
 
   host = module.cluster.cluster_endpoint
