@@ -22,7 +22,7 @@ func prepareTerraformDir(t *testing.T) string {
 		t.Fatalf("Failed to create temp dir %s", dirName)
 	}
 
-	err = copy.Copy("../jx_module", dirName)
+	err = copy.Copy("../", dirName)
 
 	if err != nil {
 		t.Fatalf("Failed to copy terraform module to temp dir %s", dirName)
