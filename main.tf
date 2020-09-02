@@ -116,14 +116,15 @@ module "vnet" {
 // Setup all required resources for using Velero for cluster backups
 // ----------------------------------------------------------------------------
 module "backup" {
-  source          = "./modules/backup"
-  enable_backup   = var.enable_backup
-  location        = var.location
-  resource_group  = module.cluster.node_resource_group
-  cluster_id      = local.cluster_id
-  cluster_name    = local.cluster_name
-  subscription_id = data.azurerm_client_config.current.subscription_id
-  tenant_id       = local.tenant_id
+  source                = "./modules/backup"
+  enable_backup         = var.enable_backup
+  location              = var.location
+  resource_group        = module.cluster.node_resource_group
+  cluster_id            = local.cluster_id
+  cluster_name          = local.cluster_name
+  subscription_id       = data.azurerm_client_config.current.subscription_id
+  tenant_id             = local.tenant_id
+  storage_account_regex = local.storage_account_name_regex
 }
 
 // ----------------------------------------------------------------------------
@@ -159,14 +160,15 @@ module "registry" {
 // Setup Vault dependencies in Azure
 // ----------------------------------------------------------------------------
 module "vault" {
-  source              = "./modules/vault"
-  location            = var.location
-  cluster_id          = local.cluster_id
-  cluster_name        = local.cluster_name
-  external_vault      = local.external_vault
-  resource_group      = local.external_vault ? "" : azurerm_resource_group.vault.0.name
-  kubelet_identity_id = module.cluster.kubelet_identity_id
-  tenant_id           = local.tenant_id
+  source                = "./modules/vault"
+  location              = var.location
+  cluster_id            = local.cluster_id
+  cluster_name          = local.cluster_name
+  external_vault        = local.external_vault
+  resource_group        = local.external_vault ? "" : azurerm_resource_group.vault.0.name
+  kubelet_identity_id   = module.cluster.kubelet_identity_id
+  tenant_id             = local.tenant_id
+  storage_account_regex = local.storage_account_name_regex
 }
 
 // ----------------------------------------------------------------------------

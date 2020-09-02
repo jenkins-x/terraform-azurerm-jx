@@ -21,3 +21,6 @@ variable "kubelet_identity_id" {
   description = "Kubelet managed identity id"
   type        = string
 }
+variable "storage_account_regex" {
+  description = "Regex expression to sanitise a storage account name"
+}

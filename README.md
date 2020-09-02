@@ -93,7 +93,6 @@ The following sections provide a full list of configuration in- and output varia
 | create\_registry | Flag to indicate whether an Azure Container Registry should be provisioned | `bool` | `false` | no |
 | dev\_env\_approvers | List of git users allowed to approve pull request for dev environment repository | `list(string)` | `[]` | no |
 | domain\_name | The domain for external dns to create records in. The script will create a random name if this is empty | `string` | `""` | no |
-| dns\_enabled | Flag which sets whether a DNS zone is provisioned or not | `bool` | `false` | no |
 | dns\_prefix | DNS prefix for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
 | dns\_resource\_group | The name of the resource group in to which to provision dns resources. The script will create a random name if this is empty | `string` | `""` | no |
 | enable\_backup | Whether or not Velero backups should be enabled | `bool` | `false` | no |

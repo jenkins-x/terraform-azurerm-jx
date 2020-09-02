@@ -32,6 +32,10 @@ variable "subscription_id" {
   type        = string
 }
 
+variable "storage_account_regex" {
+  description = "Regex expression to sanitise a storage account name"
+}
+
 // ----------------------------------------------------------------------------
 // Optional Variables
 // ----------------------------------------------------------------------------

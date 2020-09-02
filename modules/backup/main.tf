@@ -40,7 +40,7 @@ resource "azuread_application_password" "velero" {
 
 resource "azurerm_storage_account" "velero" {
   count                    = var.enable_backup ? 1 : 0
-  name                     = "backup${var.cluster_id}"
+  name                     = substr(join("", regexall(var.storage_account_regex, "backup${var.cluster_id}")), 0, 24)
   resource_group_name      = var.resource_group
   location                 = var.location
   account_tier             = "Standard"
