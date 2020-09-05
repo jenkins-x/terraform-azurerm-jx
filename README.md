@@ -133,6 +133,7 @@ The following sections provide a full list of configuration in- and output varia
 | dns\_prefix | The FQDN of the created cluster |
 | dns\_resource\_group | Resource group name in which DNS zone was created |
 | domain\_name | The subdomain that houses `jx` hosts |
+| env\_vars | Executable command to set jx boot required environment variables |
 | fully\_qualified\_domain\_name | The fully qualified domain name of the subdomain for 'jx' hosts |
 | jx\_requirements | The jx-requirements rendered output |
 | kube\_admin\_config\_raw | The raw kube config to auth to the AKS cluster |
@@ -141,6 +142,7 @@ The following sections provide a full list of configuration in- and output varia
 | subnet\_name | The name of the subnet in which AKS is deployed |
 | subscription\_id | Id of subscription in which resources were created |
 | tenant\_id | The tenant id of the Azure Active Directory the cluster was created under |
+| vault\_storage\_account\_key | The storage account access key for Vault backend storage  |
 | velero\_client\_id | The client id of the service principal that Velero will use to authenticate to Azure storage |
 | velero\_client\_secret | The client secret of the service principal that Velero will use to authenticate to Azure storage |
 | velero\_container\_name | Container name created for Velero |
@@ -148,6 +150,13 @@ The following sections provide a full list of configuration in- and output varia
 | velero\_storage\_account\_name | Storage account name created for Velero |
 | velero\_storage\_resource\_group\_name | Resource group name that contains storage account for Velero |
 
+#### JX Boot Environment secrets
+
+The following environment variables must be present when running `jx boot` and can be sourced from terraform outputs. The terraform output `env_vars` contains an executable command to set these automatically.
+
+| Environment Variable | Terraform Output |
+|------|-------------|
+| VAULT_AZURE_STORAGE_ACCESS_KEY | vault\_storage\_account\_key
 
 ### Production cluster considerations
 

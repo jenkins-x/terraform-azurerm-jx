@@ -9,7 +9,7 @@ cluster:
 %{ endfor }
   environmentGitOwner: "${git_owner_requirement_repos}"
   provider: aks
-  registry: "${registry_name}.azurecr.io"
+  registry: "${registry_name}"
 gitops: true
 environments:
   - key: dev
@@ -17,7 +17,7 @@ environments:
   - key: production
 ingress:
   domain: "${domain}"
-  ignoreLoadBalancer: true
+  ignoreLoadBalancer: ${ignore_load_balancer}
   externalDNS: ${enable_external_dns}
   tls:
     email: "${tls_email}"
