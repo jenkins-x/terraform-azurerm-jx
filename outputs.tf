@@ -66,3 +66,6 @@ output "velero_client_secret" {
 output "connect" {
   value = "az aks get-credentials --subscription ${data.azurerm_subscription.current.subscription_id} --name ${local.cluster_name} --resource-group ${local.cluster_resource_group} --admin"
 }
+output "env_vars" {
+  value = "export VAULT_AZURE_STORAGE_ACCESS_KEY=${module.vault.vault_storage_account_key}"
+}

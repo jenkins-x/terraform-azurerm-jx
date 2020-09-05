@@ -3,7 +3,7 @@
 //
 // ----------------------------------------------------------------------------
 terraform {
-  required_version = ">= 0.12.17"
+  required_version = ">= 0.13.0"
 }
 
 // ----------------------------------------------------------------------------
@@ -181,8 +181,9 @@ locals {
     dev_env_approvers           = var.dev_env_approvers
 
     // External DNS
-    enable_external_dns = var.external_dns_enabled
-    domain              = module.dns.domain
+    enable_external_dns  = var.external_dns_enabled
+    domain               = module.dns.domain
+    ignore_load_balancer = var.external_dns_enabled
 
     // TLS
     enable_tls                 = var.enable_tls
@@ -201,7 +202,7 @@ locals {
 
     // Container Registry
     create_registry = var.create_registry
-    registry_name   = local.container_registry_name
+    registry_name   = var.create_registry ? "${local.container_registry_name}.azurecr.io" : ""
 
     // Vault
     external_vault               = local.external_vault
