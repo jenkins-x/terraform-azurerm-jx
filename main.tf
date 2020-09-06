@@ -187,8 +187,8 @@ locals {
     ignore_load_balancer = var.external_dns_enabled
 
     // TLS
-    enable_tls                 = var.enable_tls
-    tls_email                  = var.tls_email
+    enable_tls                 = var.tls.enable
+    tls_email                  = var.tls.email
     use_production_letsencrypt = var.lets_encrypt_production
 
     // Velero

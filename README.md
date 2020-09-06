@@ -82,7 +82,7 @@ The following sections provide a full list of configuration in- and output varia
 #### Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+|:------:|-------------|:-----------:|:---------:|:-----:|
 | apex\_domain | The apex domain in to which to create delegation records for the `domain_name` | `string` | `""` | no |
 | apex\_domain\_resource\_group\_name | The resource group name in which the apex domain resides | `string` | `""` | no |
 | cluster\_name | Variable to provide your desired name for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
@@ -97,7 +97,6 @@ The following sections provide a full list of configuration in- and output varia
 | dns\_prefix | DNS prefix for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
 | dns\_resource\_group | The name of the resource group in to which to provision dns resources. The script will create a random name if this is empty | `string` | `""` | no |
 | enable\_backup | Whether or not Velero backups should be enabled | `bool` | `false` | no |
-| enable\_tls | Flag to enable TLS in the final `jx-requirements.yml` file | `bool` | `false` | no |
 | external\_dns\_enabled | Flag to enable external dns in `jx-requirerments.yml`. Requires `domain_name`, `apex_domain` and `apex_domain_resource_group_name` to be specified so the appropriate Azure DNS zone can be configured correctly.
 | git\_owner\_requirement\_repos | The git id of the owner for the requirement repositories | `string` | `""` | no |
 | jenkins\_x\_namespace | Kubernetes namespace to install Jenkins X in | `string` | `"jx"` | no |
@@ -110,7 +109,7 @@ The following sections provide a full list of configuration in- and output varia
 | registry\_resource\_group | Name of resource group (to provision) in which to create registry. The script will create a random name if this is empty | `string` | `""` | no |
 | subnet\_cidr | The CIDR of the provisioned  subnet within the `vnet_cidr` to to which worker nodes are placed | `string` | `"10.8.0.0/24"` | no |
 | subnet\_name | The name of the subnet in Azure to be created. The script will create a random name if this is empty | `string` | `""` | no |
-| tls\_email | Email used by Let's Encrypt. Required for TLS when parent\_domain is specified | `string` | `""` | no |
+| tls | enable - Flag to enable TLS. email - Email used by Let's Encrypt | `object` | `{ enable = false, email = "" }` | no |
 | vault\_url | URL to an external Vault instance in case Jenkins X shall not create its own system Vault | `string` | `""` | no |
 | vault\resource\_group | Resource group to create Vault resources in | `string` | `""` | no |
 | velero\_namespace | Kubernetes namespace for Velero | `string` | `"velero"` | no |
