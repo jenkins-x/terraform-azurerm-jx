@@ -54,19 +54,36 @@ variable "subnet_name" {
   type    = string
   default = ""
 }
-variable "tls_email" {
-  description = "The email to register the LetsEncrypt certificate with. Added to the `jx-requirements.yml` file"
-  type        = string
-  default     = ""
-}
-variable "enable_tls" {
-  description = "Flag to enable TLS in the final `jx-requirements.yml` file"
-  type        = bool
-  default     = false
-}
 variable "jenkins_x_namespace" {
   type    = string
   default = "jx"
+}
+
+// ----------------------------------------------------------------------------
+// TLS
+// ----------------------------------------------------------------------------
+
+variable "tls" {
+  type = object({
+    enable = string,
+    email  = string,
+  })
+
+  description = "enable - Flag to enable TLS in the final `jx-requirements.yml` file. email - The email to register the LetsEncrypt certificate with. Added to the `jx-requirements.yml` file"
+
+  default = {
+    enable = false
+    email  = ""
+  }
+
+  validation {
+    condition = (
+      (var.tls.enable && length(var.tls.email) > 0)
+      || ! var.tls.enable
+    )
+    error_message = "If TLS is enabled then var.tls.email must be specified."
+  }
+
 }
 
 // ----------------------------------------------------------------------------

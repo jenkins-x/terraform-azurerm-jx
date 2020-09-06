@@ -3,7 +3,7 @@
 //
 // ----------------------------------------------------------------------------
 terraform {
-  required_version = ">= 0.12.17"
+  required_version = ">= 0.13.0"
 }
 
 // ----------------------------------------------------------------------------
@@ -185,8 +185,8 @@ locals {
     domain              = module.dns.domain
 
     // TLS
-    enable_tls                 = var.enable_tls
-    tls_email                  = var.tls_email
+    enable_tls                 = var.tls.enable
+    tls_email                  = var.tls.email
     use_production_letsencrypt = var.lets_encrypt_production
 
     // Velero
