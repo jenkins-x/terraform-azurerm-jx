@@ -30,6 +30,10 @@ variable "cluster_resource_group" {
   type    = string
   default = ""
 }
+variable "cluster_node_resource_group" {
+  type    = string
+  default = ""
+}
 variable "dns_resource_group" {
   type    = string
   default = ""

@@ -23,6 +23,9 @@ variable "dns_prefix" {
 variable "resource_group_name" {
   type = string
 }
+variable "node_resource_group_name" {
+  type = string
+}
 variable "network_resource_group" {
   type = string
 }
