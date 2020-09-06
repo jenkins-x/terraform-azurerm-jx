@@ -87,7 +87,8 @@ The following sections provide a full list of configuration in- and output varia
 | apex\_domain\_resource\_group\_name | The resource group name in which the apex domain resides | `string` | `""` | no |
 | cluster\_name | Variable to provide your desired name for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
 | cluster\_network\_model | Variable to define the network model for the cluster. Valid values are either `kubenet` or `azure` | `string` | `"kubenet"` | no |
-| cluster\_resource\_group | The name of the resource group in to which to provision cluster resources. The script will create a random name if this is empty | `string` | `""` | no |
+| cluster\_resource\_group | The name of the resource group in to which to provision AKS managed cluster. The script will create a random name if this is empty | `string` | `""` | no |
+| cluster\_node\_resource\_group | Resource group name in which to provision AKS cluster nodes. The script will create a random name if this is empty | `string` | `""` | no |
 | cluster\_version | Kubernetes version to use for the EKS cluster. | `string` | `"1.15"` | no |
 | container\_registry\_name | Name of container registry to provision. The script will create a random name if this is empty | `string` | `""` | no |
 | create\_registry | Flag to indicate whether an Azure Container Registry should be provisioned | `bool` | `false` | no |
