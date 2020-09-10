@@ -30,6 +30,9 @@ pipelineConfig:
                 args:
                   - linux
               - name: build-and-push-image
+                env:
+                  - name: NO_GOOGLE_APPLICATION_CREDENTIALS
+                    value: "true"
                 image: gcr.io/kaniko-project/executor:v0.24.0
                 command: /kaniko/executor
                 args: ['--dockerfile=Dockerfile','--destination=$(VERIFY_KEY_VAULT_IMAGE_NAME)','--context=/workspace/source/test_commands','--cache-dir=/workspace']
