@@ -1,17 +1,10 @@
 package test
 
 import (
-	"bytes"
-	"context"
-	"fmt"
-	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2019-06-01/storage"
 	"github.com/Azure/azure-storage-blob-go/azblob"
-	"github.com/gruntwork-io/terratest/modules/azure"
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
-	"net/url"
 	"os"
 	"path"
 
@@ -69,39 +62,16 @@ func TestTerraformWithBackupEnabledTest(t *testing.T) {
 	// Assert that Velero namespace exists within cluster
 	_ = k8s.GetNamespace(t, options, veleroNamespace)
 
-	authorizer, err := azure.NewAuthorizer()
+	verifyStorageContainer(t, subscriptionId, storageResourceGroupName, storageAccountName, containerName, getBlobTokenCredential(t, veleroClientId, veleroClientSecret))
+
+}
+
+func getBlobTokenCredential(t *testing.T, clientID string, clientSecret string) azblob.Credential {
+
+	storageAccessToken, err := getAzureADToken(AzureStorageResourceID, clientID, clientSecret)
 	if err != nil {
-		t.Fatal("Unable to create Azure authorizer from environment")
+		t.Fatal("failed to get access token for Azure Resource Manager")
 	}
 
-	ctx := context.Background()
-	blobClient := storage.NewBlobContainersClientWithBaseURI(storage.DefaultBaseURI, subscriptionId)
-	blobClient.Authorizer = *authorizer
-
-	_, err = blobClient.Get(ctx, storageResourceGroupName, storageAccountName, containerName)
-
-	if assert.NoError(t, err) {
-
-		storageAccessToken, err := getAzureADToken(AzureStorageResourceID, veleroClientId, veleroClientSecret)
-
-		if err != nil {
-			t.Fatal("failed to get access token for Azure Resource Manager")
-		}
-
-		credential := azblob.NewTokenCredential(storageAccessToken.AccessToken, nil)
-		u, err := url.Parse(fmt.Sprintf("https://%s.blob.core.windows.net/%s", storageAccountName, containerName))
-		if assert.NoError(t, err) {
-			containerURL := azblob.NewContainerURL(*u, azblob.NewPipeline(credential, azblob.PipelineOptions{}))
-			blobURL := containerURL.NewBlockBlobURL("test")
-			resp, err := azblob.UploadStreamToBlockBlob(ctx, bytes.NewReader([]byte("testData")), blobURL, azblob.UploadStreamToBlockBlobOptions{})
-
-			// Assert no error return from upload blob request
-			if assert.NoError(t, err) {
-				// Assert 201 - Created response message back from upload blob request
-				assert.Equal(t, 201, resp.Response().StatusCode)
-			}
-
-		}
-	}
-
+	return azblob.NewTokenCredential(storageAccessToken.AccessToken, nil)
 }

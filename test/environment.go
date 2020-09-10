@@ -14,6 +14,7 @@ const AzureSubscriptionId = "AZURE_SUBSCRIPTION_ID"
 const AzureClientSecret = "AZURE_CLIENT_SECRET"
 const ApexDomain = "TFVAR_APEX_DOMAIN_NAME"
 const ApexDomainResourceGroup = "TFVAR_APEX_DOMAIN_RESOURCE_GROUP_NAME"
+const verifyKeyVaultDockerImage = "VERIFY_KEY_VAULT_IMAGE_NAME"
 
 var requiredAzureEnvVars = []string{
 	AzureClientSecret,

@@ -13,4 +13,7 @@ require (
 	github.com/otiai10/copy v1.2.0
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de // indirect
+	k8s.io/api v0.18.3
+	k8s.io/apimachinery v0.18.3
+	k8s.io/client-go v0.18.3
 )
