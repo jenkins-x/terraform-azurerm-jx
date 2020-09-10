@@ -45,6 +45,21 @@ output "tenant_id" {
 output "vault_storage_account_key" {
   value = module.vault.vault_storage_account_key
 }
+output "vault_storage_account_name" {
+  value = module.vault.vault_storage_account_name
+}
+output "vault_name" {
+  value = module.vault.vault_keyvault_name
+}
+output "vault_container_name" {
+  value = module.vault.vault_storage_container_name
+}
+output "vault_key_name" {
+  value = module.vault.vault_key_name
+}
+output "vault_resource_group_name" {
+  value = local.vault_resource_group
+}
 output "velero_namespace" {
   value = var.velero_namespace
 }

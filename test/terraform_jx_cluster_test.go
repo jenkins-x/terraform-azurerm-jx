@@ -1,6 +1,7 @@
 package test
 
 import (
+	"github.com/Azure/azure-storage-blob-go/azblob"
 	"github.com/gruntwork-io/terratest/modules/azure"
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -15,7 +16,7 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 
 	t.Parallel()
 
-	checkAzureEnvVars(t, []string{})
+	checkAzureEnvVars(t, []string{verifyKeyVaultDockerImage})
 
 	dirName := prepareTerraformDir(t)
 
@@ -42,12 +43,18 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 	clusterName := terraform.Output(t, terraformOptions, "cluster_name")
 	subscriptionId := terraform.Output(t, terraformOptions, "subscription_id")
 	kubeConfigRaw := terraform.Output(t, terraformOptions, "kube_admin_config_raw")
+	vaultStorageAccountName := terraform.Output(t, terraformOptions, "vault_storage_account_name")
+	vaultStorageAccountKey := terraform.Output(t, terraformOptions, "vault_storage_account_key")
+	vaultStorageResourceGroupName := terraform.Output(t, terraformOptions, "vault_resource_group_name")
+	vaultName := terraform.Output(t, terraformOptions, "vault_name")
+	vaultContainerName := terraform.Output(t, terraformOptions, "vault_container_name")
+	vaultKeyName := terraform.Output(t, terraformOptions, "vault_key_name")
 
 	kubeConfigPath := path.Join(dirName, ".kubeconfig")
 	err := ioutil.WriteFile(kubeConfigPath, []byte(kubeConfigRaw), 500)
 
 	if err != nil {
-		t.Error("Unable to write kube config to disk")
+		t.Fatal("Unable to write kube config to disk")
 	}
 
 	// Test we can get a handle on managed cluster client without error
@@ -61,6 +68,33 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 
 		// Assert that jx namespace exists within cluster
 		_ = k8s.GetNamespace(t, options, "jx")
+
+		credential, err := azblob.NewSharedKeyCredential(vaultStorageAccountName, vaultStorageAccountKey)
+
+		if err != nil {
+			t.Fatal("Unable to configure new shared key credential for Azure Storage")
+		}
+
+		// Check Vault storage
+		verifyStorageContainer(t, subscriptionId,
+			vaultStorageResourceGroupName,
+			vaultStorageAccountName,
+			vaultContainerName,
+			credential)
+
+		// Check Vault Key Vault Access from within cluster by running Kubernetes job
+		clientSet, err := newK8s(kubeConfigPath)
+
+		if err != nil {
+			t.Fatalf("Unable to build k8s clientSet")
+		}
+
+		var containerArgs = []string{"-vaultName", vaultName, "-vaultKeyName", vaultKeyName}
+
+		exitCode, err := executeJob("verify-key-vault-job", os.Getenv(verifyKeyVaultDockerImage), containerArgs, clientSet)
+
+		assert.NoError(t, err)
+		assert.Equal(t, int32(0), exitCode)
 
 	}
 }

@@ -40,3 +40,6 @@ kubeconfig*
 
 #Intellij
 .idea
+
+#Test commands build output
+test_commands/build
