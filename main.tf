@@ -176,7 +176,7 @@ module "vault" {
 // Let's generate jx-requirements.yml 
 // ----------------------------------------------------------------------------
 locals {
-  interpolated_content = templatefile("./modules/jx-requirements.yml.tpl", {
+  interpolated_content = templatefile("${path.module}/modules/jx-requirements.yml.tpl", {
     cluster_name                = local.cluster_name
     git_owner_requirement_repos = var.git_owner_requirement_repos
     dev_env_approvers           = var.dev_env_approvers
