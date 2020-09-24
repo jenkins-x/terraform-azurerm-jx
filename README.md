@@ -126,6 +126,7 @@ The following sections provide a full list of configuration in- and output varia
 |------|-------------|
 | cluster\_fqdn | The FQDN of the created cluster |
 | cluster\_name | The name of the created cluster |
+| cluster\_node\_resource\_group | Resource group name that contains AKS VMs |
 | cluster\_resource\_group | Resource group name that contains AKS managed cluster |
 | connect | Command to run to connect to AKS cluster (downloads kube config) |
 | container\_registry\_name | The name of the Azure Container Registry that was created |
