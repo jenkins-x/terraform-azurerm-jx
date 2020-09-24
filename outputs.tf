@@ -18,6 +18,9 @@ output "network_resource_group" {
 output "cluster_resource_group" {
   value = local.cluster_resource_group
 }
+output "cluster_node_resource_group" {
+  value = local.cluster_node_resource_group
+}
 output "network_name" {
   value = local.network_name
 }
