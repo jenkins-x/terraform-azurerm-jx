@@ -30,7 +30,10 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		// Set the path to the Terraform code that will be tested.
 		TerraformDir: dirName,
-		EnvVars:      getTerraformEnvVars(),
+		Vars: map[string]interface{}{
+			"location": getDefaultAzureLocation(),
+		},
+		EnvVars: getTerraformEnvVars(),
 	}
 
 	// Clean up resources with "terraform destroy" at the end of the test.

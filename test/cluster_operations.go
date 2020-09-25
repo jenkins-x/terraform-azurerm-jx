@@ -1,7 +1,6 @@
 package test
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	batchv1 "k8s.io/api/batch/v1"
@@ -43,7 +42,7 @@ func newK8s(kubeConfigPath string) (*kubernetes.Clientset, error) {
 
 func executeJob(jobName string, imageName string, containerArgs []string, clientSet *kubernetes.Clientset) (containerExitCode int32, cErr error) {
 
-	ctx := context.Background()
+	ctx := generateDefaultContext()
 
 	jobsClient := clientSet.BatchV1().Jobs("default")
 
