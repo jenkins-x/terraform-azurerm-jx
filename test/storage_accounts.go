@@ -2,7 +2,6 @@ package test
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2019-06-01/storage"
 	"github.com/Azure/azure-storage-blob-go/azblob"
@@ -19,7 +18,7 @@ func verifyStorageContainer(t *testing.T, subscriptionId string, storageResource
 		t.Fatal("Unable to create Azure authorizer from environment")
 	}
 
-	ctx := context.Background()
+	ctx := generateDefaultContext()
 	blobClient := storage.NewBlobContainersClientWithBaseURI(storage.DefaultBaseURI, subscriptionId)
 	blobClient.Authorizer = *authorizer
 

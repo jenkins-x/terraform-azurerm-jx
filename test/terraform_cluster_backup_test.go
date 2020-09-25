@@ -31,6 +31,7 @@ func TestTerraformWithBackupEnabledTest(t *testing.T) {
 		TerraformDir: dirName,
 		Vars: map[string]interface{}{
 			"enable_backup": true,
+			"location":      getDefaultAzureLocation(),
 		},
 		EnvVars: getTerraformEnvVars(),
 	}

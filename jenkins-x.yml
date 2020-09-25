@@ -8,21 +8,11 @@ pipelineConfig:
           image: gcr.io/jenkinsxio/builder-terraform:2.1.142-761
         env:
           - name: VERIFY_KEY_VAULT_IMAGE_NAME
-            value: gcr.io/jenkinsxio/azure_verify_key_vault:1.0
+            value: gcr.io/jenkinsxio/azure_verify_key_vault:$(inputs.params.version)
+          - name: TFVAR_AZURE_LOCATION
+            value: uksouth
         stages:
           - name: build
-#            options:
-#              volumes:
-#                - name: kaniko-secret
-#                  secret:
-#                    secretName: kaniko-secret
-#                    items:
-#                      - key: kaniko-secret
-#                        path: config.json
-#              containerOptions:
-#                volumeMounts:
-#                  - name: kaniko-secret
-#                    mountPath: /kaniko/.docker
             steps:
               - name: build-test-commands
                 dir: test_commands
@@ -37,47 +27,47 @@ pipelineConfig:
                 command: /kaniko/executor
                 args: ['--dockerfile=Dockerfile','--destination=$(VERIFY_KEY_VAULT_IMAGE_NAME)','--context=/workspace/source/test_commands','--cache-dir=/workspace']
 
-#          - name: ci
-#            steps:
-#              - name: terraform-lint
-#                command: make
-#                args:
-#                  - lint
-#              - name: terratest
-#                command: make
-#                args:
-#                  - test
-#                env:
-#                  - name: AZURE_CLIENT_SECRET
-#                    valueFrom:
-#                      secretKeyRef:
-#                        name: azure-terraform-bdd-secret
-#                        key: AZURE_CLIENT_SECRET
-#                  - name: AZURE_SUBSCRIPTION_ID
-#                    valueFrom:
-#                      secretKeyRef:
-#                        name: azure-terraform-bdd-secret
-#                        key: AZURE_SUBSCRIPTION_ID
-#                  - name: AZURE_CLIENT_ID
-#                    valueFrom:
-#                      secretKeyRef:
-#                        name: azure-terraform-bdd-secret
-#                        key: AZURE_CLIENT_ID
-#                  - name: AZURE_TENANT_ID
-#                    valueFrom:
-#                      secretKeyRef:
-#                        name: azure-terraform-bdd-secret
-#                        key: AZURE_TENANT_ID
-#                  - name: TFVAR_APEX_DOMAIN_NAME
-#                    valueFrom:
-#                      secretKeyRef:
-#                        name: azure-terraform-bdd-secret
-#                        key: TFVAR_APEX_DOMAIN_NAME
-#                  - name: TFVAR_APEX_DOMAIN_RESOURCE_GROUP_NAME
-#                    valueFrom:
-#                      secretKeyRef:
-#                        name: azure-terraform-bdd-secret
-#                        key: TFVAR_APEX_DOMAIN_RESOURCE_GROUP_NAME
+          - name: ci
+            steps:
+              - name: terraform-lint
+                command: make
+                args:
+                  - lint
+              - name: terratest
+                command: make
+                args:
+                  - test
+                env:
+                  - name: AZURE_CLIENT_SECRET
+                    valueFrom:
+                      secretKeyRef:
+                        name: azure-terraform-bdd-secret
+                        key: AZURE_CLIENT_SECRET
+                  - name: AZURE_SUBSCRIPTION_ID
+                    valueFrom:
+                      secretKeyRef:
+                        name: azure-terraform-bdd-secret
+                        key: AZURE_SUBSCRIPTION_ID
+                  - name: AZURE_CLIENT_ID
+                    valueFrom:
+                      secretKeyRef:
+                        name: azure-terraform-bdd-secret
+                        key: AZURE_CLIENT_ID
+                  - name: AZURE_TENANT_ID
+                    valueFrom:
+                      secretKeyRef:
+                        name: azure-terraform-bdd-secret
+                        key: AZURE_TENANT_ID
+                  - name: TFVAR_APEX_DOMAIN_NAME
+                    valueFrom:
+                      secretKeyRef:
+                        name: azure-terraform-bdd-secret
+                        key: TFVAR_APEX_DOMAIN_NAME
+                  - name: TFVAR_APEX_DOMAIN_RESOURCE_GROUP_NAME
+                    valueFrom:
+                      secretKeyRef:
+                        name: azure-terraform-bdd-secret
+                        key: TFVAR_APEX_DOMAIN_RESOURCE_GROUP_NAME
 
     release:
       pipeline:

@@ -1,15 +1,13 @@
 package test
 
 import (
-	"context"
 	"github.com/Azure/azure-sdk-for-go/services/dns/mgmt/2018-05-01/dns"
 	"github.com/gruntwork-io/terratest/modules/azure"
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
-	"os"
-
 	"io/ioutil"
+	"os"
 	"path"
 	"testing"
 )
@@ -39,6 +37,7 @@ func TestTerraformEDnsWithApexDomainCluster(t *testing.T) {
 			"external_dns_enabled":            true,
 			"apex_domain":                     os.Getenv(ApexDomain),
 			"apex_domain_resource_group_name": os.Getenv(ApexDomainResourceGroup),
+			"location":                        getDefaultAzureLocation(),
 		},
 		EnvVars: getTerraformEnvVars(),
 	}
@@ -83,7 +82,7 @@ func TestTerraformEDnsWithApexDomainCluster(t *testing.T) {
 		dnsClient := dns.NewZonesClient(subscriptionId)
 		dnsClient.Authorizer = *authorizer
 
-		_, err = dnsClient.Get(context.Background(), dnsResourceGroupName, domainName)
+		_, err = dnsClient.Get(generateDefaultContext(), dnsResourceGroupName, domainName)
 
 		// Assert we get no error back from requesting the Azure DNS Zone
 		assert.NoError(t, err)

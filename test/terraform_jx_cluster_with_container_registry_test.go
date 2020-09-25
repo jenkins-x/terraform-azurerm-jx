@@ -1,7 +1,6 @@
 package test
 
 import (
-	"context"
 	"fmt"
 	"github.com/Azure/azure-sdk-for-go/services/preview/containerregistry/runtime/2019-08-15-preview/containerregistry"
 	"github.com/Azure/go-autorest/autorest"
@@ -32,6 +31,7 @@ func TestTerraformJxClusterWithContainerRegistry(t *testing.T) {
 		TerraformDir: dirName,
 		Vars: map[string]interface{}{
 			"create_registry": true,
+			"location":        getDefaultAzureLocation(),
 		},
 		EnvVars: getTerraformEnvVars(),
 	}
@@ -53,7 +53,6 @@ func verifyAzureContainerRegistry(t *testing.T, name string, tenantId string) {
 
 	loginURI := "https://" + name
 	imageName := "testimage"
-	ctx := context.Background()
 	armAccessToken, err := getAzureADToken(ArmResource, "", "")
 
 	if err != nil {
@@ -71,7 +70,7 @@ func verifyAzureContainerRegistry(t *testing.T, name string, tenantId string) {
 		AccessToken: registryAccessToken,
 	})
 
-	resp, err := blobClient.StartUpload(ctx, imageName)
+	resp, err := blobClient.StartUpload(generateDefaultContext(), imageName)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 202, resp.StatusCode)

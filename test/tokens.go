@@ -1,7 +1,6 @@
 package test
 
 import (
-	"context"
 	"fmt"
 	"github.com/Azure/azure-sdk-for-go/services/preview/containerregistry/runtime/2019-08-15-preview/containerregistry"
 	"github.com/Azure/go-autorest/autorest/adal"
@@ -58,7 +57,7 @@ func getAzureADToken(resourceID string, clientId string, clientSecret string) (a
 
 func getRegistryAccessToken(armAccessToken string, loginURI string, registryName string, tenantId string, scope string) (string, error) {
 
-	ctx := context.Background()
+	ctx := generateDefaultContext()
 	authorizer, err := auth.NewAuthorizerFromEnvironment()
 
 	if err != nil {
