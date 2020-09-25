@@ -73,9 +73,8 @@ resource "azurerm_resource_group" "registry" {
   location = var.location
 }
 
-resource "azurerm_resource_group" "vault" {
-  count    = local.external_vault ? 0 : 1
-  name     = local.vault_resource_group
+resource "azurerm_resource_group" "secrets" {
+  name     = local.secrets_resource_group
   location = var.location
 }
 
@@ -125,7 +124,7 @@ module "backup" {
   cluster_name          = local.cluster_name
   subscription_id       = data.azurerm_client_config.current.subscription_id
   tenant_id             = local.tenant_id
-  storage_account_regex = local.storage_account_name_regex
+  storage_account_regex = local.alphanum_regex
 }
 
 // ----------------------------------------------------------------------------
@@ -158,18 +157,32 @@ module "registry" {
 }
 
 // ----------------------------------------------------------------------------
-// Setup Vault dependencies in Azure
+// Setup Vault dependencies in Azure (if Vault selected for secret storage)
 // ----------------------------------------------------------------------------
 module "vault" {
   source                = "./modules/vault"
   location              = var.location
   cluster_id            = local.cluster_id
   cluster_name          = local.cluster_name
-  external_vault        = local.external_vault
-  resource_group        = local.external_vault ? "" : azurerm_resource_group.vault.0.name
+  enable_vault          = ! var.secret_management.enable_native
+  resource_group        = azurerm_resource_group.secrets.name
   kubelet_identity_id   = module.cluster.kubelet_identity_id
   tenant_id             = local.tenant_id
-  storage_account_regex = local.storage_account_name_regex
+  storage_account_regex = local.alphanum_regex
+}
+
+// ----------------------------------------------------------------------------
+// Setup Key Vault dependencies in Azure (if Key Vault selected for secret storage)
+// ----------------------------------------------------------------------------
+module "key_vault" {
+  source          = "./modules/keyvault"
+  location        = var.location
+  cluster_id      = local.cluster_id
+  cluster_name    = local.cluster_name
+  resource_group  = azurerm_resource_group.secrets.name
+  enable_keyvault = var.secret_management.enable_native
+  tenant_id       = local.tenant_id
+  key_vault_regex = local.alphanum_regex
 }
 
 // ----------------------------------------------------------------------------
@@ -206,8 +219,7 @@ locals {
     registry_name   = var.create_registry ? "${local.container_registry_name}.azurecr.io" : ""
 
     // Vault
-    external_vault               = local.external_vault
-    vault_url                    = var.vault_url
+    enable_vault                 = ! var.secret_management.enable_native
     vault_tenant_id              = local.tenant_id
     vault_keyvault_name          = module.vault.vault_keyvault_name
     vault_key_name               = module.vault.vault_key_name

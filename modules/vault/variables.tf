@@ -1,5 +1,5 @@
-variable "external_vault" {
-  type = string
+variable "enable_vault" {
+  type = bool
 }
 variable "cluster_name" {
   type = string

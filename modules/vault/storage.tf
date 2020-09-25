@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "vault" {
-  count                    = var.external_vault ? 0 : 1
+  count                    = var.enable_vault ? 1 : 0
   name                     = local.vault_name
   resource_group_name      = var.resource_group
   location                 = var.location
@@ -9,7 +9,7 @@ resource "azurerm_storage_account" "vault" {
 }
 
 resource "azurerm_storage_container" "vault" {
-  count                = var.external_vault ? 0 : 1
+  count                = var.enable_vault ? 1 : 0
   name                 = "vault"
   storage_account_name = azurerm_storage_account.vault.0.name
 }

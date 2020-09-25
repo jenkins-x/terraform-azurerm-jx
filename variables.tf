@@ -159,15 +159,17 @@ variable "registry_resource_group" {
 // ----------------------------------------------------------------------------
 // Vault
 // ----------------------------------------------------------------------------
-variable "vault_url" {
-  description = "URL to an external Vault instance in case Jenkins X shall not create its own system Vault"
-  type        = string
-  default     = ""
-}
-variable "vault_resource_group" {
-  description = "Resource group to create for Vault resources"
-  type        = string
-  default     = ""
+
+variable "secret_management" {
+  type = object({
+    enable_native  = bool,
+    resource_group = string
+  })
+  description = "enable_native set to true will use native storage of secrets in Key Vault and not use Hashicorp Vault. resource_group - name of resource group in which to provision secret infrastructure"
+  default = {
+    enable_native  = false,
+    resource_group = "",
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -207,4 +209,10 @@ variable "version_stream_ref" {
   description = "The git ref for version stream to use when booting Jenkins X. See https://jenkins-x.io/docs/concepts/version-stream/"
   type        = string
   default     = "master"
+}
+
+variable "is_jx2" {
+  default     = true
+  type        = bool
+  description = "Flag to specify if jx2 related resources need to be created"
 }

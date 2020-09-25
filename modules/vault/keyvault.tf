@@ -1,5 +1,5 @@
 resource "azurerm_key_vault" "vault" {
-  count                       = var.external_vault ? 0 : 1
+  count                       = var.enable_vault ? 1 : 0
   name                        = local.vault_name
   location                    = var.location
   resource_group_name         = var.resource_group
@@ -10,7 +10,7 @@ resource "azurerm_key_vault" "vault" {
 }
 
 resource "azurerm_key_vault_access_policy" "terraform_vault_access_policy" {
-  count        = var.external_vault ? 0 : 1
+  count        = var.enable_vault ? 1 : 0
   key_vault_id = azurerm_key_vault.vault.0.id
 
   tenant_id = var.tenant_id
@@ -28,7 +28,7 @@ resource "azurerm_key_vault_access_policy" "terraform_vault_access_policy" {
 }
 
 resource "azurerm_key_vault_access_policy" "kubelet_vault_access_policy" {
-  count        = var.external_vault ? 0 : 1
+  count        = var.enable_vault ? 1 : 0
   key_vault_id = azurerm_key_vault.vault.0.id
 
   tenant_id = var.tenant_id
@@ -52,7 +52,7 @@ resource "azurerm_key_vault_access_policy" "kubelet_vault_access_policy" {
 
 resource "azurerm_key_vault_key" "generated" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_vault_access_policy]
-  count        = var.external_vault ? 0 : 1
+  count        = var.enable_vault ? 1 : 0
   name         = local.key_name
   key_vault_id = azurerm_key_vault.vault.0.id
   key_type     = "RSA"
