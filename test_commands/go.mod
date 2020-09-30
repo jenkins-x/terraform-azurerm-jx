@@ -1,4 +1,4 @@
-module github.com/jenkins-x/terraform-azurerm-jx/test/verify_key_vault
+module github.com/jenkins-x/terraform-azurerm-jx/test_commands
 
 go 1.13
 

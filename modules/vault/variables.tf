@@ -24,3 +24,12 @@ variable "kubelet_identity_id" {
 variable "storage_account_regex" {
   description = "Regex expression to sanitise a storage account name"
 }
+variable "identity_resource_group_name" {
+  type = string
+}
+variable "secret_infra_namespace" {
+  type = string
+}
+variable "enable_workload_identity" {
+  type = bool
+}

@@ -40,9 +40,9 @@ func newK8s(kubeConfigPath string) (*kubernetes.Clientset, error) {
 	return clientSet, nil
 }
 
-func executeJob(jobName string, imageName string, containerArgs []string, clientSet *kubernetes.Clientset) (containerExitCode int32, cErr error) {
+func executeJob(jobName string, imageName string, containerArgs []string, labels map[string]string, clientSet *kubernetes.Clientset) (containerExitCode int32, cErr error) {
 
-	ctx := generateDefaultContext()
+	ctx := generateDefaultContext(KubernetesTimeout)
 
 	jobsClient := clientSet.BatchV1().Jobs("default")
 
@@ -56,7 +56,8 @@ func executeJob(jobName string, imageName string, containerArgs []string, client
 			TTLSecondsAfterFinished: &ttl,
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: jobName,
+					Name:   jobName,
+					Labels: labels,
 				},
 				Spec: apiv1.PodSpec{
 					RestartPolicy: apiv1.RestartPolicyNever,

@@ -29,17 +29,6 @@ variable "node_resource_group_name" {
 variable "network_resource_group" {
   type = string
 }
-variable "msi_name" {
-  type = string
-}
-variable "aad_pod_id_ns" {
-  type    = string
-  default = "aad-pod-id"
-}
-variable "aad_pod_id_binding_selector" {
-  type    = string
-  default = "aad-pod-id-binding-selector"
-}
 variable "jenkins_x_namespace" {
   type = string
 }
@@ -57,5 +46,8 @@ variable "jx_bot_username" {
   type = string
 }
 variable "jx_bot_token" {
+  type = string
+}
+variable "secrets_infra_namespace" {
   type = string
 }

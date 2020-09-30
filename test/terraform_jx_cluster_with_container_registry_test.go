@@ -70,7 +70,7 @@ func verifyAzureContainerRegistry(t *testing.T, name string, tenantId string) {
 		AccessToken: registryAccessToken,
 	})
 
-	resp, err := blobClient.StartUpload(generateDefaultContext(), imageName)
+	resp, err := blobClient.StartUpload(generateDefaultContext(AzureRmTimeout), imageName)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 202, resp.StatusCode)

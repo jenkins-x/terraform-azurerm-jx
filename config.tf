@@ -40,7 +40,7 @@ resource "kubernetes_secret" "jx-post-process" {
 
   data = {
     commands : <<EOF
-kubectl create secret -n secret-infra ${local.kubernetes_external_secret_name} --from-literal=clientSecret=${module.key_vault.key_vault_client_secret} --from-literal=clientId=${module.key_vault.key_vault_client_id} --from-literal=tenantId=${local.tenant_id}
+kubectl create secret -n ${local.secret_infra_namespace} ${local.kubernetes_external_secret_name} --from-literal=clientSecret=${module.key_vault.key_vault_client_secret} --from-literal=clientId=${module.key_vault.key_vault_client_id} --from-literal=tenantId=${local.tenant_id}
 EOF
   }
 

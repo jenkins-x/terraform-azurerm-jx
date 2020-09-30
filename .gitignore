@@ -43,3 +43,6 @@ kubeconfig*
 
 #Test commands build output
 test_commands/build
+
+# Kubernetes-alpha provider
+dev.log

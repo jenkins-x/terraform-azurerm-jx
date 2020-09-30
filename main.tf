@@ -10,16 +10,16 @@ terraform {
 // Configure providers
 // ----------------------------------------------------------------------------
 provider "azurerm" {
-  version = ">= 2.25.0"
+  version = ">= 2.29.0"
   features {}
 }
 
 provider "azuread" {
-  version = ">=0.11.0"
+  version = ">=1.0.0"
 }
 
 provider "kubernetes" {
-  version          = ">= 1.12.0"
+  version          = ">= 1.13.2"
   load_config_file = false
 
   host = module.cluster.cluster_endpoint
@@ -70,29 +70,29 @@ data "azurerm_client_config" "current" {
 // ----------------------------------------------------------------------------
 
 resource "azurerm_resource_group" "network" {
-  name     = local.network_resource_group
+  name     = local.network_resource_group_name
   location = var.location
 }
 
 resource "azurerm_resource_group" "cluster" {
-  name     = local.cluster_resource_group
+  name     = local.cluster_resource_group_name
   location = var.location
 }
 
 resource "azurerm_resource_group" "dns" {
   count    = var.external_dns_enabled ? 1 : 0
-  name     = local.dns_resource_group
+  name     = local.dns_resource_group_name
   location = var.location
 }
 
 resource "azurerm_resource_group" "registry" {
   count    = var.create_registry ? 1 : 0
-  name     = local.registry_resource_group
+  name     = local.registry_resource_group_name
   location = var.location
 }
 
 resource "azurerm_resource_group" "secrets" {
-  name     = local.secrets_resource_group
+  name     = local.secrets_resource_group_name
   location = var.location
 }
 
@@ -110,14 +110,15 @@ module "cluster" {
   cluster_version          = var.cluster_version
   location                 = var.location
   resource_group_name      = azurerm_resource_group.cluster.name
-  network_resource_group   = local.network_resource_group
+  network_resource_group   = local.network_resource_group_name
   jenkins_x_namespace      = var.jenkins_x_namespace
   cluster_network_model    = var.cluster_network_model
-  node_resource_group_name = local.cluster_node_resource_group
+  node_resource_group_name = local.cluster_node_resource_group_name
   is_jx2                   = var.is_jx2
   jx_git_url               = var.jx_git_url
   jx_bot_username          = var.jx_bot_username
   jx_bot_token             = var.jx_bot_token
+  secrets_infra_namespace  = local.secret_infra_namespace
 }
 
 // ----------------------------------------------------------------------------
@@ -182,15 +183,18 @@ module "registry" {
 // Setup Vault dependencies in Azure (if Vault selected for secret storage)
 // ----------------------------------------------------------------------------
 module "vault" {
-  source                = "./modules/vault"
-  location              = var.location
-  cluster_id            = local.cluster_id
-  cluster_name          = local.cluster_name
-  enable_vault          = ! var.secret_management.enable_native
-  resource_group        = azurerm_resource_group.secrets.name
-  kubelet_identity_id   = module.cluster.kubelet_identity_id
-  tenant_id             = local.tenant_id
-  storage_account_regex = local.alphanum_regex
+  source                       = "./modules/vault"
+  location                     = var.location
+  cluster_id                   = local.cluster_id
+  cluster_name                 = local.cluster_name
+  enable_vault                 = ! var.secret_management.enable_native
+  resource_group               = azurerm_resource_group.secrets.name
+  kubelet_identity_id          = module.cluster.kubelet_identity_id
+  tenant_id                    = local.tenant_id
+  storage_account_regex        = local.alphanum_regex
+  identity_resource_group_name = local.identity_resource_group_name
+  secret_infra_namespace       = local.secret_infra_namespace
+  enable_workload_identity     = var.enable_workload_identity
 }
 
 // ----------------------------------------------------------------------------
@@ -205,6 +209,18 @@ module "key_vault" {
   enable_keyvault = var.secret_management.enable_native
   tenant_id       = local.tenant_id
   key_vault_regex = local.alphanum_regex
+}
+
+// ----------------------------------------------------------------------------
+// Setup Workload Identity for AKS (a.k.a. Azure AD Pod Identity)
+// ----------------------------------------------------------------------------
+
+module "workload_identity" {
+  source                      = "./modules/workloadidentity"
+  enable                      = var.enable_workload_identity
+  kubelet_identity_id         = module.cluster.kubelet_identity_id
+  cluster_node_resource_group = module.cluster.node_resource_group
+  identities                  = local.identities
 }
 
 // ----------------------------------------------------------------------------

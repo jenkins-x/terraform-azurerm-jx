@@ -82,7 +82,7 @@ func TestTerraformEDnsWithApexDomainCluster(t *testing.T) {
 		dnsClient := dns.NewZonesClient(subscriptionId)
 		dnsClient.Authorizer = *authorizer
 
-		_, err = dnsClient.Get(generateDefaultContext(), dnsResourceGroupName, domainName)
+		_, err = dnsClient.Get(generateDefaultContext(AzureRmTimeout), dnsResourceGroupName, domainName)
 
 		// Assert we get no error back from requesting the Azure DNS Zone
 		assert.NoError(t, err)

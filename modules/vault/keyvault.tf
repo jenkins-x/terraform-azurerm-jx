@@ -6,7 +6,6 @@ resource "azurerm_key_vault" "vault" {
   enabled_for_disk_encryption = true
   tenant_id                   = var.tenant_id
   sku_name                    = "standard"
-
 }
 
 resource "azurerm_key_vault_access_policy" "terraform_vault_access_policy" {
@@ -32,7 +31,7 @@ resource "azurerm_key_vault_access_policy" "kubelet_vault_access_policy" {
   key_vault_id = azurerm_key_vault.vault.0.id
 
   tenant_id = var.tenant_id
-  object_id = var.kubelet_identity_id
+  object_id = var.enable_workload_identity ? azurerm_user_assigned_identity.key_vault_identity.0.principal_id : var.kubelet_identity_id
 
   key_permissions = [
     "get",
