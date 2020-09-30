@@ -31,7 +31,7 @@ resource "kubernetes_config_map" "jenkins_x_requirements" {
 //
 // ----------------------------------------------------------------------------
 resource "kubernetes_secret" "jx-post-process" {
-  count = var.is_jx2 ? 0 : 1
+  count = ! var.is_jx2 && var.secret_management.enable_native ? 1 : 0
 
   metadata {
     name      = "jx-post-process"

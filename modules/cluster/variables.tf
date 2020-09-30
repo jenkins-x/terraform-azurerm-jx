@@ -36,3 +36,15 @@ variable "cluster_network_model" {
   type    = string
   default = "kubenet"
 }
+variable "is_jx2" {
+  type = bool
+}
+variable "jx_git_url" {
+  type = string
+}
+variable "jx_bot_username" {
+  type = string
+}
+variable "jx_bot_token" {
+  type = string
+}

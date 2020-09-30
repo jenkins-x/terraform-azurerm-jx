@@ -34,6 +34,24 @@ provider "kubernetes" {
   )
 }
 
+provider "helm" {
+  version = ">=1.3.0"
+  kubernetes {
+    load_config_file = false
+
+    host = module.cluster.cluster_endpoint
+    cluster_ca_certificate = base64decode(
+      module.cluster.cluster_ca_certificate,
+    )
+    client_certificate = base64decode(
+      module.cluster.client_certificate,
+    )
+    client_key = base64decode(
+      module.cluster.client_key,
+    )
+  }
+}
+
 provider "random" {
   version = ">=2.3.0"
 }
@@ -96,6 +114,10 @@ module "cluster" {
   jenkins_x_namespace      = var.jenkins_x_namespace
   cluster_network_model    = var.cluster_network_model
   node_resource_group_name = local.cluster_node_resource_group
+  is_jx2                   = var.is_jx2
+  jx_git_url               = var.jx_git_url
+  jx_bot_username          = var.jx_bot_username
+  jx_bot_token             = var.jx_bot_token
 }
 
 // ----------------------------------------------------------------------------
