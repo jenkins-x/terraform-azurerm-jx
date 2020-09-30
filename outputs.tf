@@ -13,13 +13,13 @@ output "dns_prefix" {
   value = local.dns_prefix
 }
 output "network_resource_group" {
-  value = local.network_resource_group
+  value = local.network_resource_group_name
 }
 output "cluster_resource_group" {
-  value = local.cluster_resource_group
+  value = local.cluster_resource_group_name
 }
 output "cluster_node_resource_group" {
-  value = local.cluster_node_resource_group
+  value = module.cluster.node_resource_group
 }
 output "network_name" {
   value = local.network_name
@@ -28,7 +28,7 @@ output "subnet_name" {
   value = local.subnet_name
 }
 output "dns_resource_group" {
-  value = local.dns_resource_group
+  value = local.dns_resource_group_name
 }
 output "domain_name" {
   value = local.domain_name
@@ -73,7 +73,10 @@ output "vault_key_name" {
   value = module.vault.vault_key_name
 }
 output "vault_resource_group_name" {
-  value = local.secrets_resource_group
+  value = local.secrets_resource_group_name
+}
+output "vault_workload_identity_selector" {
+  value = var.enable_workload_identity ? local.vault_identity_name : ""
 }
 output "velero_namespace" {
   value = var.velero_namespace
@@ -95,7 +98,7 @@ output "velero_client_secret" {
   sensitive = true
 }
 output "connect" {
-  value = "az aks get-credentials --subscription ${data.azurerm_subscription.current.subscription_id} --name ${local.cluster_name} --resource-group ${local.cluster_resource_group} --admin"
+  value = "az aks get-credentials --subscription ${data.azurerm_subscription.current.subscription_id} --name ${local.cluster_name} --resource-group ${local.cluster_resource_group_name} --admin"
 }
 output "env_vars" {
   value     = "export VAULT_AZURE_STORAGE_ACCESS_KEY=${module.vault.vault_storage_account_key}"

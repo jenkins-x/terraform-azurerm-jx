@@ -18,7 +18,7 @@ func verifyStorageContainer(t *testing.T, subscriptionId string, storageResource
 		t.Fatal("Unable to create Azure authorizer from environment")
 	}
 
-	ctx := generateDefaultContext()
+	ctx := generateDefaultContext(AzureRmTimeout)
 	blobClient := storage.NewBlobContainersClientWithBaseURI(storage.DefaultBaseURI, subscriptionId)
 	blobClient.Authorizer = *authorizer
 

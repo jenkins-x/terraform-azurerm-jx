@@ -9,6 +9,7 @@ import (
 	"github.com/Azure/go-autorest/autorest/adal"
 	"github.com/Azure/go-autorest/autorest/azure"
 	"log"
+	"time"
 )
 
 const (
@@ -37,15 +38,18 @@ func main() {
 	kvClient := keyvault.New()
 	kvClient.Authorizer = autorest.NewBearerAuthorizer(token)
 
-	keyBundle, err := kvClient.GetKey(context.Background(), fmt.Sprintf("https://%s.vault.azure.net/", *vaultName), *vaultKeyName, "")
+	log.Print("Getting Key Bundle")
+	ctx, _ := context.WithTimeout(context.Background(), time.Second*time.Duration(60))
+	keyBundle, err := kvClient.GetKey(ctx, fmt.Sprintf("https://%s.vault.azure.net/", *vaultName), *vaultKeyName, "")
 
 	if err != nil {
-		log.Fatal("Unable to retrieve keybundle")
+		log.Fatal("Unable to retrieve key bundle " + err.Error())
 	}
 
 	if keyBundle.StatusCode != 200 {
 		log.Fatal("Unauthorized to retrieve key")
 	}
+	log.Print("Retrieved key bundle successfully")
 }
 
 // getAccessToken retrieves Azure API access token.
@@ -65,13 +69,13 @@ func getAccessToken(tenantId string, clientID string, clientSecret string, envir
 		return token, nil
 	}
 
-	log.Print("Getting  v1 endpoint")
+	log.Print("Getting v1 endpoint")
 	msiEndpoint, err := adal.GetMSIVMEndpoint()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the managed service identity endpoint: %v", err)
 	}
 
-	log.Print("Getting service token  from msi endpoint")
+	log.Print("Getting service token from msi endpoint")
 	token, err := adal.NewServicePrincipalTokenFromMSI(msiEndpoint, keyVaultResourceURI)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the managed service identity token: %v", err)

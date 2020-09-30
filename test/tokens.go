@@ -57,7 +57,7 @@ func getAzureADToken(resourceID string, clientId string, clientSecret string) (a
 
 func getRegistryAccessToken(armAccessToken string, loginURI string, registryName string, tenantId string, scope string) (string, error) {
 
-	ctx := generateDefaultContext()
+	ctx := generateDefaultContext(AzureRmTimeout)
 	authorizer, err := auth.NewAuthorizerFromEnvironment()
 
 	if err != nil {

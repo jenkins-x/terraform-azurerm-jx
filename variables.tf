@@ -22,19 +22,19 @@ variable "location" {
   type    = string
   default = "australiaeast"
 }
-variable "network_resource_group" {
+variable "network_resource_group_name" {
   type    = string
   default = ""
 }
-variable "cluster_resource_group" {
+variable "cluster_resource_group_name" {
   type    = string
   default = ""
 }
-variable "cluster_node_resource_group" {
+variable "cluster_node_resource_group_name" {
   type    = string
   default = ""
 }
-variable "dns_resource_group" {
+variable "dns_resource_group_name" {
   type    = string
   default = ""
 }
@@ -105,9 +105,6 @@ variable "domain_name" {
   type    = string
   default = ""
 }
-variable "msi_name" {
-  type = string
-}
 variable "external_dns_enabled" {
   type    = bool
   default = false
@@ -153,7 +150,7 @@ variable "container_registry_name" {
   type        = string
   default     = ""
 }
-variable "registry_resource_group" {
+variable "registry_resource_group_name" {
   description = "Name of resource group (to provision) in which to create registry"
   type        = string
   default     = ""
@@ -165,16 +162,24 @@ variable "registry_resource_group" {
 
 variable "secret_management" {
   type = object({
-    enable_native  = bool,
-    resource_group = string
+    enable_native       = bool,
+    resource_group_name = string
   })
   description = "enable_native set to true will use native storage of secrets in Key Vault and not use Hashicorp Vault. resource_group - name of resource group in which to provision secret infrastructure"
   default = {
-    enable_native  = false,
-    resource_group = "",
+    enable_native       = false,
+    resource_group_name = "",
   }
 }
 
+// ----------------------------------------------------------------------------
+// Workload Identity
+// ----------------------------------------------------------------------------
+variable "enable_workload_identity" {
+  description = "Flag to indicate whether to enable workload identity in the form of Azure AD Pod Identity"
+  type        = bool
+  default     = false
+}
 // ----------------------------------------------------------------------------
 // jx-requirements.yml specific variables only used for template rendering
 // ----------------------------------------------------------------------------

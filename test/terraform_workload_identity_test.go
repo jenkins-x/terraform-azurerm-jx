@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestTerraformBasicJxCluster(t *testing.T) {
+func TestTerraformWorkloadIdentity(t *testing.T) {
 
 	t.Parallel()
 
@@ -31,7 +31,8 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 		// Set the path to the Terraform code that will be tested.
 		TerraformDir: dirName,
 		Vars: map[string]interface{}{
-			"location": getDefaultAzureLocation(),
+			"location":                 getDefaultAzureLocation(),
+			"enable_workload_identity": true,
 		},
 		EnvVars: getTerraformEnvVars(),
 	}
@@ -52,6 +53,7 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 	vaultName := terraform.Output(t, terraformOptions, "vault_name")
 	vaultContainerName := terraform.Output(t, terraformOptions, "vault_container_name")
 	vaultKeyName := terraform.Output(t, terraformOptions, "vault_key_name")
+	workloadIdentitySelector := terraform.Output(t, terraformOptions, "vault_workload_identity_selector")
 
 	kubeConfigPath := path.Join(dirName, ".kubeconfig")
 	err := ioutil.WriteFile(kubeConfigPath, []byte(kubeConfigRaw), 500)
@@ -93,8 +95,10 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 		}
 
 		var containerArgs = []string{"-vaultName", vaultName, "-vaultKeyName", vaultKeyName}
-
-		exitCode, err := executeJob("verify-key-vault-job", os.Getenv(verifyKeyVaultDockerImage), containerArgs, map[string]string{}, clientSet)
+		var labels = map[string]string{
+			"aadpodidbinding": workloadIdentitySelector,
+		}
+		exitCode, err := executeJob("verify-key-vault-job", os.Getenv(verifyKeyVaultDockerImage), containerArgs, labels, clientSet)
 
 		assert.NoError(t, err)
 		assert.Equal(t, int32(0), exitCode)

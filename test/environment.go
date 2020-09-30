@@ -20,8 +20,10 @@ const ApexDomainResourceGroup = "TFVAR_APEX_DOMAIN_RESOURCE_GROUP_NAME"
 const AzureLocation = "TFVAR_AZURE_LOCATION"
 const verifyKeyVaultDockerImage = "VERIFY_KEY_VAULT_IMAGE_NAME"
 const AzureRmTimeout = "AZURE_RM_TIMEOUT"
+const KubernetesTimeout = "KUBERNETES_TIMEOUT"
 
 const AzureDefaultLocation = "australiaeast"
+const defaultTimeOut = 300
 
 var requiredAzureEnvVars = []string{
 	AzureClientSecret,
@@ -38,8 +40,16 @@ func getDefaultAzureLocation() string {
 	return value
 }
 
-func generateDefaultContext() context.Context {
-	ctx, _ := context.WithTimeout(context.Background(), getAzureRmTimeout())
+func generateDefaultContext(envTimeoutVariable string) context.Context {
+	timeOut := int64(defaultTimeOut)
+	value := os.Getenv(envTimeoutVariable)
+	if len(value) != 0 {
+		valueInt, err := strconv.ParseInt(value, 10, 32)
+		if err != nil {
+			timeOut = valueInt
+		}
+	}
+	ctx, _ := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
 	return ctx
 }
 
