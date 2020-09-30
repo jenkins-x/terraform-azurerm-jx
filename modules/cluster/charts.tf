@@ -7,6 +7,10 @@ resource "helm_release" "jx-git-operator" {
   create_namespace = true
 
   set {
+    name  = "bootServiceAccount.enabled"
+    value = true
+  }
+  set {
     name  = "env.NO_RESOURCE_APPLY"
     value = true
   }
