@@ -89,7 +89,7 @@ The following sections provide a full list of configuration in- and output varia
 | cluster\_network\_model | Variable to define the network model for the cluster. Valid values are either `kubenet` or `azure` | `string` | `"kubenet"` | no |
 | cluster\_resource\_group\_name | The name of the resource group in to which to provision AKS managed cluster. The script will create a random name if this is empty | `string` | `""` | no |
 | cluster\_node\_resource\_group\_name | Resource group name in which to provision AKS cluster nodes. The script will create a random name if this is empty | `string` | `""` | no |
-| cluster\_version | Kubernetes version to use for the EKS cluster. | `string` | `"1.15"` | no |
+| cluster\_version | Kubernetes version to use for the AKS cluster. | `string` | `"1.18.8"` | no |
 | container\_registry\_name | Name of container registry to provision. The script will create a random name if this is empty | `string` | `""` | no |
 | create\_registry | Flag to indicate whether an Azure Container Registry should be provisioned | `bool` | `false` | no |
 | dev\_env\_approvers | List of git users allowed to approve pull request for dev environment repository | `list(string)` | `[]` | no |
@@ -111,11 +111,10 @@ The following sections provide a full list of configuration in- and output varia
 | node\_count | The number of worker nodes to use for the cluster | `number` | `1` | no |
 | node\_size | The size of the worker node to use for the cluster | `string` | `"Standard_B2ms"` | no |
 | registry\_resource\_group\_name | Name of resource group (to provision) in which to create registry. The script will create a random name if this is empty | `string` | `""` | no |
+| secret\_management | Configures whether native secret storage is enabled and resource group to use. enable_native = true provisions Key vault store used by Kubernetes External Secrets. enable_native  = false uses Hashicorp vault (still backed by Azure Key Vault) |  `object` | `{ enable_native = false, resource_group_name = "" }` | no |
 | subnet\_cidr | The CIDR of the provisioned  subnet within the `vnet_cidr` to to which worker nodes are placed | `string` | `"10.8.0.0/24"` | no |
 | subnet\_name | The name of the subnet in Azure to be created. The script will create a random name if this is empty | `string` | `""` | no |
 | tls | enable - Flag to enable TLS. email - Email used by Let's Encrypt | `object` | `{ enable = false, email = "" }` | no |
-| vault\_url | URL to an external Vault instance in case Jenkins X shall not create its own system Vault | `string` | `""` | no |
-| vault\resource\_group\_name | Resource group to create Vault resources in | `string` | `""` | no |
 | velero\_namespace | Kubernetes namespace for Velero | `string` | `"velero"` | no |
 | velero\_schedule | The Velero backup schedule in cron notation to be set in the Velero Schedule CRD (see [default-backup.yaml](https://github.com/jenkins-x/jenkins-x-boot-config/blob/master/systems/velero-backups/templates/default-backup.yaml)) | `string` | `"0 * * * *"` | no |
 | velero\_ttl | The the lifetime of a Velero backup to be set in the Velero Schedule CRD (see [default-backup.yaml](https://github.com/jenkins-x/jenkins-x-boot-config/blob/master/systems/velero-backups/templates/default-backup)) | `string` | `"720h0m0s"` | no |
@@ -140,13 +139,22 @@ The following sections provide a full list of configuration in- and output varia
 | env\_vars | Executable command to set jx boot required environment variables |
 | fully\_qualified\_domain\_name | The fully qualified domain name of the subdomain for 'jx' hosts |
 | jx\_requirements | The jx-requirements rendered output |
+| key\_vault\_client\_id | Client id for service principal authorised to connect to Azure Key Vault |
+| key\_vault\_client\_secret | Client secret of service principal authorised to connect to Azure Key Vault |
+| key\_vault\_name | Name of Azure Key Vault created |
 | kube\_admin\_config\_raw | The raw kube config to auth to the AKS cluster |
 | network\_name | The name of the virtual network |
 | network\_resource\_group | Resource group name that contains virtual network |
 | subnet\_name | The name of the subnet in which AKS is deployed |
 | subscription\_id | Id of subscription in which resources were created |
 | tenant\_id | The tenant id of the Azure Active Directory the cluster was created under |
+| vault\_container\_name | Azure storage container name used for Hashicorp Vault backend |
+| vault\_key\_name | Unseal key name used for Hasicorp vault (and stored in Azure Key Vault) |
+| vault\_name | The name of the Key Vault backing Hashicorp Vault |
+| vault\_resource\_group\_name | Resource group in which vault resources are created |
 | vault\_storage\_account\_key | The storage account access key for Vault backend storage  |
+| vault\_storage\_account\_name | The storage account name for Vault backend storage |
+| vault\_workload\_identity\_selector | Azure AD Pod Identity selector to apply to pods to enable workload identity. Labels should be applied as `aadpodidbinding: <selector>` |
 | velero\_client\_id | The client id of the service principal that Velero will use to authenticate to Azure storage |
 | velero\_client\_secret | The client secret of the service principal that Velero will use to authenticate to Azure storage |
 | velero\_container\_name | Container name created for Velero |
