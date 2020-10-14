@@ -1,15 +1,15 @@
 package test
 
 import (
-	"github.com/Azure/azure-storage-blob-go/azblob"
-	"github.com/gruntwork-io/terratest/modules/azure"
-	"github.com/gruntwork-io/terratest/modules/k8s"
-	"github.com/gruntwork-io/terratest/modules/terraform"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/Azure/azure-storage-blob-go/azblob"
+	"github.com/gruntwork-io/terratest/modules/azure"
+	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTerraformWorkloadIdentity(t *testing.T) {
@@ -33,6 +33,7 @@ func TestTerraformWorkloadIdentity(t *testing.T) {
 		Vars: map[string]interface{}{
 			"location":                 getDefaultAzureLocation(),
 			"enable_workload_identity": true,
+			"is_jx2":                   false,
 		},
 		EnvVars: getTerraformEnvVars(),
 	}
@@ -68,11 +69,6 @@ func TestTerraformWorkloadIdentity(t *testing.T) {
 	if assert.NoError(t, err) {
 		// Assert provisioning status is Succeeded against the AKS cluster
 		assert.Equal(t, "Succeeded", *managedCluster.ProvisioningState)
-
-		options := k8s.NewKubectlOptions("", kubeConfigPath, "default")
-
-		// Assert that jx namespace exists within cluster
-		_ = k8s.GetNamespace(t, options, "jx")
 
 		credential, err := azblob.NewSharedKeyCredential(vaultStorageAccountName, vaultStorageAccountKey)
 

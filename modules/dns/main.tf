@@ -26,7 +26,7 @@ resource "azurerm_role_assignment" "Give_ExternalDNS_SP_Contributor_Access_to_Re
 }
 
 resource "kubernetes_secret" "external_dns" {
-  count = var.enabled ? 1 : 0
+  count = var.enabled && var.is_jx2 ? 1 : 0
   metadata {
     name      = local.external_dns_secret_name
     namespace = var.jenkins_x_namespace

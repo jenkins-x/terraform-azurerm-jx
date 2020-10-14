@@ -25,3 +25,6 @@ variable "tenant_id" {
 variable "subscription_id" {
   type = string
 }
+variable "is_jx2" {
+  type = bool
+}
