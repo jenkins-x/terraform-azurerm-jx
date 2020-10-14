@@ -10,7 +10,7 @@ terraform {
 // Configure providers
 // ----------------------------------------------------------------------------
 provider "azurerm" {
-  version = ">= 2.29.0"
+  version = ">= 2.31.1"
   features {}
 }
 
@@ -35,7 +35,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  version = ">=1.3.0"
+  version = ">=1.3.2"
   kubernetes {
     load_config_file = false
 
@@ -53,7 +53,7 @@ provider "helm" {
 }
 
 provider "random" {
-  version = ">=2.3.0"
+  version = ">=3.0.0"
 }
 
 // ----------------------------------------------------------------------------
@@ -165,6 +165,7 @@ module "dns" {
   kubelet_identity_id      = module.cluster.kubelet_identity_id
   subscription_id          = data.azurerm_client_config.current.subscription_id
   tenant_id                = local.tenant_id
+  is_jx2                   = var.is_jx2
 }
 
 // ----------------------------------------------------------------------------

@@ -32,6 +32,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 resource "kubernetes_namespace" "jenkins_x_namespace" {
+  count = var.is_jx2 ? 1 : 0
   metadata {
     name = var.jenkins_x_namespace
   }
@@ -49,6 +50,7 @@ resource "kubernetes_namespace" "jenkins_x_namespace" {
 }
 
 resource "kubernetes_namespace" "secrets_infra" {
+  count = var.is_jx2 ? 0 : 1
   metadata {
     name = var.secrets_infra_namespace
   }

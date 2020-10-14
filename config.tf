@@ -17,12 +17,20 @@ resource "kubernetes_config_map" "jenkins_x_requirements" {
   lifecycle {
     ignore_changes = [
       metadata,
-      data
     ]
   }
   depends_on = [
     module.cluster
   ]
+}
+
+locals {
+  secrets = list(
+    var.secret_management.enable_native ? "kubectl create secret generic -n ${local.secret_infra_namespace} ${local.kubernetes_external_secret_name} --from-literal=clientSecret=${module.key_vault.key_vault_client_secret} --from-literal=clientId=${module.key_vault.key_vault_client_id} --from-literal=tenantId=${local.tenant_id} --dry-run -o yaml | kubectl apply -f -" : "",
+    var.external_dns_enabled ? "kubectl create secret generic -n ${var.jenkins_x_namespace} ${module.dns.secret_name} --from-literal=azure.json='${module.dns.azure_json}' --dry-run -o yaml | kubectl apply -f -" : ""
+  )
+  create_secret   = var.secret_management.enable_native || var.external_dns_enabled
+  compact_secrets = compact(local.secrets)
 }
 
 // ----------------------------------------------------------------------------
@@ -31,7 +39,7 @@ resource "kubernetes_config_map" "jenkins_x_requirements" {
 //
 // ----------------------------------------------------------------------------
 resource "kubernetes_secret" "jx-post-process" {
-  count = ! var.is_jx2 && var.secret_management.enable_native ? 1 : 0
+  count = ! var.is_jx2 && local.create_secret ? 1 : 0
 
   metadata {
     name      = "jx-post-process"
@@ -39,15 +47,12 @@ resource "kubernetes_secret" "jx-post-process" {
   }
 
   data = {
-    commands : <<EOF
-kubectl create secret -n ${local.secret_infra_namespace} ${local.kubernetes_external_secret_name} --from-literal=clientSecret=${module.key_vault.key_vault_client_secret} --from-literal=clientId=${module.key_vault.key_vault_client_id} --from-literal=tenantId=${local.tenant_id}
-EOF
+    commands : join("\n", local.compact_secrets)
   }
 
   lifecycle {
     ignore_changes = [
-      metadata,
-      data
+      metadata
     ]
   }
   depends_on = [
