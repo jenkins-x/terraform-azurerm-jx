@@ -249,11 +249,12 @@ spec:
           image: gcr.io/jenkinsxio/builder-terraform:2.1.142-761
           name: terraform-lint
           resources: {}
-        - args:
-          - make test
-          command:
-          - /bin/sh
-          - -c
+        - script: |
+            #!/usr/bin/env bash
+            source .jx/variables.sh
+            export VERIFY_KEY_VAULT_IMAGE_NAME=$VERSION
+            echo "==== using VERIFY_KEY_VAULT_IMAGE_NAME=$VERIFY_KEY_VAULT_IMAGE_NAME
+            make test
           env:
           - name: AZURE_CLIENT_ID
             valueFrom:
