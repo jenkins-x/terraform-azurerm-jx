@@ -229,3 +229,4 @@ For the script to work, the environment variable _$GH_TOKEN_ must be exported an
 ## How can I contribute
 
 Contributions are very welcome! Check out the [Contribution Guidelines](./CONTRIBUTING.md) for instructions.
+
