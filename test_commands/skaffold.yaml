@@ -1,0 +1,11 @@
+apiVersion: skaffold/v2beta8
+kind: Config
+metadata:
+  name: test-commands
+build:
+  artifacts:
+  - image: azure_verify_key_vault
+deploy:
+  kubectl:
+    manifests:
+    - k8s/azure_verify_key_vault_job.yaml

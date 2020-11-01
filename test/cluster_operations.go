@@ -1,20 +1,23 @@
 package test
 
 import (
+	"bytes"
+	"context"
 	"flag"
 	"fmt"
+	"io"
+	"log"
+	"path/filepath"
+
 	batchv1 "k8s.io/api/batch/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
-	"log"
-	"path/filepath"
-	"time"
 )
 
-func newK8s(kubeConfigPath string) (*kubernetes.Clientset, error) {
+func NewK8s(kubeConfigPath string) (*kubernetes.Clientset, error) {
 	var clientSet *kubernetes.Clientset
 	var kubeconfig *string
 
@@ -40,7 +43,7 @@ func newK8s(kubeConfigPath string) (*kubernetes.Clientset, error) {
 	return clientSet, nil
 }
 
-func executeJob(jobName string, imageName string, containerArgs []string, labels map[string]string, clientSet *kubernetes.Clientset) (containerExitCode int32, cErr error) {
+func ExecuteJob(jobName string, imageName string, containerArgs []string, labels map[string]string, clientSet *kubernetes.Clientset) (int32, string, error) {
 
 	ctx := generateDefaultContext(KubernetesTimeout)
 
@@ -73,39 +76,51 @@ func executeJob(jobName string, imageName string, containerArgs []string, labels
 		},
 	}
 
-	podWatchList, err := clientSet.CoreV1().Pods("default").Watch(ctx, metav1.ListOptions{})
+	podWatchList, err := clientSet.CoreV1().Pods("default").Watch(ctx, metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("job-name=%s", jobName),
+	})
 
 	if err != nil {
-		return 0, fmt.Errorf("error creating pod watch: %w", err)
+		return 0, "", fmt.Errorf("error creating pod watch: %w", err)
 	}
 
 	_, _ = jobsClient.Create(ctx, job, metav1.CreateOptions{})
 
-	defer func() {
-		deletionPropagation := metav1.DeletePropagationForeground
-		err := jobsClient.Delete(ctx, jobName, metav1.DeleteOptions{
-			PropagationPolicy: &deletionPropagation,
-		})
-		if err != nil {
-			cErr = err
-		}
-	}()
-
-	go func() {
-		time.Sleep(300 * time.Second)
-		log.Print("Timeout waiting for pod to complete")
-		podWatchList.Stop()
-	}()
-
+	var lastPodLog string
 	for event := range podWatchList.ResultChan() {
 		p, ok := event.Object.(*apiv1.Pod)
 		if !ok {
 			log.Fatal("unexpected type")
 		}
 		if p.Status.Phase == apiv1.PodSucceeded {
-			return p.Status.ContainerStatuses[0].State.Terminated.ExitCode, nil
+			logs := getPodLogs(ctx, clientSet, *p)
+			return p.Status.ContainerStatuses[0].State.Terminated.ExitCode, logs, nil
+		} else if p.Status.Phase == apiv1.PodFailed {
+			logs := getPodLogs(ctx, clientSet, *p)
+			log.Printf("job pod failed - logs are: %s", logs)
 		}
+		lastPodLog = getPodLogs(ctx, clientSet, *p)
 	}
 
-	return -1, fmt.Errorf("error waiting for pod to complete")
+	return -1, lastPodLog, fmt.Errorf("error waiting for pod to complete")
+}
+
+func getPodLogs(ctx context.Context, clientSet *kubernetes.Clientset, pod apiv1.Pod) string {
+	podLogOpts := apiv1.PodLogOptions{}
+
+	req := clientSet.CoreV1().Pods(pod.Namespace).GetLogs(pod.Name, &podLogOpts)
+	podLogs, err := req.Stream(ctx)
+	if err != nil {
+		return "error in opening stream"
+	}
+	defer podLogs.Close()
+
+	buf := new(bytes.Buffer)
+	_, err = io.Copy(buf, podLogs)
+	if err != nil {
+		return "error in copy information from podLogs to buf"
+	}
+	str := buf.String()
+
+	return str
 }

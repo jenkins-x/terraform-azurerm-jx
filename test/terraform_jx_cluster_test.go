@@ -86,7 +86,7 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 			credential)
 
 		// Check Vault Key Vault Access from within cluster by running Kubernetes job
-		clientSet, err := newK8s(kubeConfigPath)
+		clientSet, err := NewK8s(kubeConfigPath)
 
 		if err != nil {
 			t.Fatalf("Unable to build k8s clientSet")
@@ -94,10 +94,12 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 
 		var containerArgs = []string{"-vaultName", vaultName, "-vaultKeyName", vaultKeyName}
 
-		exitCode, err := executeJob("verify-key-vault-job", os.Getenv(verifyKeyVaultDockerImage), containerArgs, map[string]string{}, clientSet)
+		exitCode, logs, err := ExecuteJob("verify-key-vault-job", os.Getenv(verifyKeyVaultDockerImage), containerArgs, map[string]string{}, clientSet)
 
 		assert.NoError(t, err)
-		assert.Equal(t, int32(0), exitCode)
+		if !assert.Equal(t, int32(0), exitCode) {
+			t.Logf("Non zero exit code returned from pod - pod logs are: %s", logs)
+		}
 
 	}
 }

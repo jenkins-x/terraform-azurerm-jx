@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: azure-verify-key-vault
+  namespace: default
+spec:
+  template:
+    metadata:
+      labels:
+        aadpodidentity: key-vault-bc162e6e930b
+    spec:
+      containers:
+        - name: azure-verify-key-vault
+          image: azure_verify_key_vault
+          args:
+            - "-vaultName"
+            - "vaulttfjxsuitedkoalabc16"
+            - "-vaultKeyName"
+            - "tfjxsuitedkoala-bc162e6e930b"
+      restartPolicy: Never
+  backoffLimit: 0

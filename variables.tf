@@ -16,7 +16,7 @@ variable "dns_prefix" {
 }
 variable "cluster_version" {
   type    = string
-  default = "1.18.8"
+  default = "1.18.10"
 }
 variable "location" {
   type    = string
