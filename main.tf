@@ -6,7 +6,7 @@ terraform {
   required_version = ">= 0.13.0"
   required_providers {
     azurerm = {
-      version = ">=2.33.0"
+      version = ">=2.34.0"
     }
     azuread = {
       version = ">=1.0.0"
@@ -18,6 +18,9 @@ terraform {
       version = ">=1.3.2"
     }
     random = {
+      version = ">=3.0.0"
+    }
+    null = {
       version = ">=3.0.0"
     }
   }
@@ -125,6 +128,8 @@ module "cluster" {
   jx_bot_username          = var.jx_bot_username
   jx_bot_token             = var.jx_bot_token
   secrets_infra_namespace  = local.secret_infra_namespace
+  enable_log_analytics     = var.enable_log_analytics
+  logging_retention_days   = var.logging_retention_days
 }
 
 // ----------------------------------------------------------------------------

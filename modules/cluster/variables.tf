@@ -51,3 +51,9 @@ variable "jx_bot_token" {
 variable "secrets_infra_namespace" {
   type = string
 }
+variable "enable_log_analytics" {
+  type = bool
+}
+variable "logging_retention_days" {
+  type = number
+}
