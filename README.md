@@ -97,6 +97,7 @@ The following sections provide a full list of configuration in- and output varia
 | dns\_prefix | DNS prefix for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
 | dns\_resource\_group\_name | The name of the resource group in to which to provision dns resources. The script will create a random name if this is empty | `string` | `""` | no |
 | enable\_backup | Whether or not Velero backups should be enabled | `bool` | `false` | no |
+| enable\_log\_analytics | Flag to indicate whether to enable Log Analytics integration for cluster | `bool` | `false` | no |
 | enable\_workload\_identity | Flag to indicate whether to enable workload identity in the form of Azure AD Pod Identity | `bool` | `false` | no |
 | external\_dns\_enabled | Flag to enable external dns in `jx-requirerments.yml`. Requires `domain_name`, `apex_domain` and `apex_domain_resource_group_name` to be specified so the appropriate Azure DNS zone can be configured correctly.
 | git\_owner\_requirement\_repos | The git id of the owner for the requirement repositories | `string` | `""` | no |
@@ -106,6 +107,7 @@ The following sections provide a full list of configuration in- and output varia
 | jx_bot_token | Bot token used to interact with the Jenkins X cluster git repository | `string` | `""` | no |
 | lets\_encrypt\_production | Flag to determine whether or not to use the Let's Encrypt production server. | `bool` | `true` | no |
 | location | The Azure region in to which to provision the cluster | `string` | `"australiaeast"` | no |
+| logging_retention_days | Number of days to retain logs in Log Analytics if enabled | `number` | `30` | no |
 | network\_name | The name of the Virtual Network in Azure to be created. The script will create a random name if this is empty | `string` | `""` | no |
 | network\_resource\_group\_name | The name of the resource group in to which to provision network resources. The script will create a random name if this is empty | `string` | `""` | no |
 | node\_count | The number of worker nodes to use for the cluster | `number` | `1` | no |

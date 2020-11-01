@@ -242,3 +242,16 @@ variable "jx_bot_token" {
   type        = string
   default     = ""
 }
+
+// ----------------------------------------------------------------------------
+// Logging
+// ----------------------------------------------------------------------------
+
+variable "enable_log_analytics" {
+  type    = bool
+  default = false
+}
+variable "logging_retention_days" {
+  type    = number
+  default = 30
+}
