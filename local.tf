@@ -30,8 +30,8 @@ locals {
   identities = var.enable_workload_identity ? [{
     name       = local.vault_identity_name
     namespace  = local.secret_infra_namespace
-    resourceId = module.vault.vault_identity.resourceId
-    clientId   = module.vault.vault_identity.clientId
+    resourceId = module.secretstorage.secret_workload_identity.resourceId
+    clientId   = module.secretstorage.secret_workload_identity.clientId
     binding = {
       name     = local.vault_identity_name
       selector = local.vault_identity_name

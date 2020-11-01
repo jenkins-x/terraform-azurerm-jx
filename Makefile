@@ -47,13 +47,17 @@ fmt: ## Reformats Terraform files according to standard
 test: ## Runs Terratest tests
 	$(GOTEST) -failfast -timeout 1h -parallel 8 -count=1 -v ./...
 
-.PHONY: test-edns
-test-edns: ## Runs Terratest tests
-	$(GOTEST) -failfast -timeout 1h -parallel 8 -count=1 -v ./... -run TestTerraformEDnsWithApexDomainCluster
-
-.PHONY: test-workloadidentity
-test-workloadidentity: ## Runs Terratest tests
+.PHONY: test-workload-identity
+test-workload-identity:
 	$(GOTEST) -failfast -timeout 1h -parallel 8 -count=1 -v ./... -run TestTerraformWorkloadIdentity
+
+.PHONY: test-basic
+test-basic:
+	$(GOTEST) -failfast -timeout 1h -parallel 8 -count=1 -v ./... -run TestTerraformBasicJxCluster
+
+.PHONY: test-edns
+test-edns:
+	$(GOTEST) -failfast -timeout 1h -parallel 8 -count=1 -v ./... -run TestTerraformEDnsWithApexDomainCluster
 
 .PHONY: clean
 clean: ## Deletes temporary files

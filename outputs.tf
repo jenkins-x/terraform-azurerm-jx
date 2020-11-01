@@ -47,30 +47,20 @@ output "tenant_id" {
   value = data.azurerm_client_config.current.tenant_id
 }
 output "vault_storage_account_key" {
-  value     = module.vault.vault_storage_account_key
+  value     = module.secretstorage.storage_account_key
   sensitive = true
-}
-output "key_vault_client_id" {
-  value = module.key_vault.key_vault_client_id
 }
 output "key_vault_name" {
-  value = module.key_vault.key_vault_name
-}
-output "key_vault_client_secret" {
-  value     = module.key_vault.key_vault_client_secret
-  sensitive = true
+  value = module.secretstorage.keyvault_name
 }
 output "vault_storage_account_name" {
-  value = module.vault.vault_storage_account_name
-}
-output "vault_name" {
-  value = module.vault.vault_keyvault_name
+  value = module.secretstorage.storage_account_name
 }
 output "vault_container_name" {
-  value = module.vault.vault_storage_container_name
+  value = module.secretstorage.storage_container_name
 }
 output "vault_key_name" {
-  value = module.vault.vault_key_name
+  value = module.secretstorage.key_name
 }
 output "vault_resource_group_name" {
   value = local.secrets_resource_group_name
@@ -101,6 +91,6 @@ output "connect" {
   value = "az aks get-credentials --subscription ${data.azurerm_subscription.current.subscription_id} --name ${local.cluster_name} --resource-group ${local.cluster_resource_group_name} --admin"
 }
 output "env_vars" {
-  value     = "export VAULT_AZURE_STORAGE_ACCESS_KEY=${module.vault.vault_storage_account_key}"
+  value     = "export VAULT_AZURE_STORAGE_ACCESS_KEY=${module.secretstorage.storage_account_key}"
   sensitive = true
 }
