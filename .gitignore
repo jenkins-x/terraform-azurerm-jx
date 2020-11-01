@@ -6,7 +6,10 @@
 *.tfstate.*
 
 # Terraform variable file
-terraform.tfvars 
+terraform.tfvars
+
+# Terraform init lock file
+.terraform.lock.hcl
 
 # Crash log files
 crash.log

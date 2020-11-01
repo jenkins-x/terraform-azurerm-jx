@@ -37,13 +37,6 @@ resource "kubernetes_namespace" "jenkins_x_namespace" {
     name = var.jenkins_x_namespace
   }
 
-  lifecycle {
-    ignore_changes = [
-      metadata[0].labels,
-      metadata[0].annotations,
-    ]
-  }
-
   depends_on = [
     azurerm_kubernetes_cluster.aks
   ]
@@ -55,10 +48,4 @@ resource "kubernetes_namespace" "secrets_infra" {
     name = var.secrets_infra_namespace
   }
 
-  lifecycle {
-    ignore_changes = [
-      metadata[0].labels,
-      metadata[0].annotations,
-    ]
-  }
 }

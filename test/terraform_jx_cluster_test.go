@@ -49,7 +49,7 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 	vaultStorageAccountName := terraform.Output(t, terraformOptions, "vault_storage_account_name")
 	vaultStorageAccountKey := terraform.Output(t, terraformOptions, "vault_storage_account_key")
 	vaultStorageResourceGroupName := terraform.Output(t, terraformOptions, "vault_resource_group_name")
-	vaultName := terraform.Output(t, terraformOptions, "vault_name")
+	vaultName := terraform.Output(t, terraformOptions, "key_vault_name")
 	vaultContainerName := terraform.Output(t, terraformOptions, "vault_container_name")
 	vaultKeyName := terraform.Output(t, terraformOptions, "vault_key_name")
 

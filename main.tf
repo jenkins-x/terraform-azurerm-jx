@@ -4,22 +4,33 @@
 // ----------------------------------------------------------------------------
 terraform {
   required_version = ">= 0.13.0"
+  required_providers {
+    azurerm = {
+      version = ">=2.33.0"
+    }
+    azuread = {
+      version = ">=1.0.0"
+    }
+    kubernetes = {
+      version = ">=1.13.3"
+    }
+    helm = {
+      version = ">=1.3.2"
+    }
+    random = {
+      version = ">=3.0.0"
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------
 // Configure providers
 // ----------------------------------------------------------------------------
 provider "azurerm" {
-  version = ">= 2.31.1"
   features {}
 }
 
-provider "azuread" {
-  version = ">=1.0.0"
-}
-
 provider "kubernetes" {
-  version          = ">= 1.13.2"
   load_config_file = false
 
   host = module.cluster.cluster_endpoint
@@ -35,7 +46,6 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  version = ">=1.3.2"
   kubernetes {
     load_config_file = false
 
@@ -50,10 +60,6 @@ provider "helm" {
       module.cluster.client_key,
     )
   }
-}
-
-provider "random" {
-  version = ">=3.0.0"
 }
 
 // ----------------------------------------------------------------------------
@@ -181,35 +187,20 @@ module "registry" {
 }
 
 // ----------------------------------------------------------------------------
-// Setup Vault dependencies in Azure (if Vault selected for secret storage)
+// Setup Secret Storage dependencies in Azure
 // ----------------------------------------------------------------------------
-module "vault" {
-  source                       = "./modules/vault"
-  location                     = var.location
+module "secretstorage" {
+  source                       = "./modules/secretstorage"
   cluster_id                   = local.cluster_id
   cluster_name                 = local.cluster_name
-  enable_vault                 = ! var.secret_management.enable_native
-  resource_group               = azurerm_resource_group.secrets.name
-  kubelet_identity_id          = module.cluster.kubelet_identity_id
-  tenant_id                    = local.tenant_id
-  storage_account_regex        = local.alphanum_regex
-  identity_resource_group_name = local.identity_resource_group_name
-  secret_infra_namespace       = local.secret_infra_namespace
+  enable_native                = var.secret_management.enable_native
   enable_workload_identity     = var.enable_workload_identity
-}
-
-// ----------------------------------------------------------------------------
-// Setup Key Vault dependencies in Azure (if Key Vault selected for secret storage)
-// ----------------------------------------------------------------------------
-module "key_vault" {
-  source          = "./modules/keyvault"
-  location        = var.location
-  cluster_id      = local.cluster_id
-  cluster_name    = local.cluster_name
-  resource_group  = azurerm_resource_group.secrets.name
-  enable_keyvault = var.secret_management.enable_native
-  tenant_id       = local.tenant_id
-  key_vault_regex = local.alphanum_regex
+  identity_resource_group_name = local.identity_resource_group_name
+  kubelet_identity_id          = module.cluster.kubelet_identity_id
+  location                     = var.location
+  resource_group_name          = azurerm_resource_group.secrets.name
+  storage_account_regex        = local.alphanum_regex
+  tenant_id                    = local.tenant_id
 }
 
 // ----------------------------------------------------------------------------
@@ -260,10 +251,10 @@ locals {
     // Vault
     enable_vault                 = ! var.secret_management.enable_native
     vault_tenant_id              = local.tenant_id
-    vault_keyvault_name          = module.vault.vault_keyvault_name
-    vault_key_name               = module.vault.vault_key_name
-    vault_storage_account_name   = module.vault.vault_storage_account_name
-    vault_storage_container_name = module.vault.vault_storage_container_name
+    vault_keyvault_name          = module.secretstorage.keyvault_name
+    vault_key_name               = module.secretstorage.key_name
+    vault_storage_account_name   = module.secretstorage.storage_account_name
+    vault_storage_container_name = module.secretstorage.storage_container_name
 
     version_stream_ref = var.version_stream_ref
     version_stream_url = var.version_stream_url
