@@ -51,6 +51,10 @@ test: ## Runs Terratest tests
 test-edns: ## Runs Terratest tests
 	$(GOTEST) -failfast -timeout 1h -parallel 8 -count=1 -v ./... -run TestTerraformEDnsWithApexDomainCluster
 
+.PHONY: test-workloadidentity
+test-workloadidentity: ## Runs Terratest tests
+	$(GOTEST) -failfast -timeout 1h -parallel 8 -count=1 -v ./... -run TestTerraformWorkloadIdentity
+
 .PHONY: clean
 clean: ## Deletes temporary files
 	@rm -rf report

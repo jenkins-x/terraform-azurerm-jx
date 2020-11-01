@@ -4,25 +4,23 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/Azure/azure-sdk-for-go/services/keyvault/2016-10-01/keyvault"
-	"github.com/Azure/go-autorest/autorest"
-	"github.com/Azure/go-autorest/autorest/adal"
-	"github.com/Azure/go-autorest/autorest/azure"
 	"log"
+	"os"
 	"time"
+
+	"github.com/Azure/azure-sdk-for-go/services/keyvault/2016-10-01/keyvault"
+	"github.com/Azure/go-autorest/autorest/azure/auth"
 )
 
 const (
-	keyVaultResourceURI = "https://vault.azure.net"
+	keyVaultResourceURI    = "https://vault.azure.net"
+	defaultAzureAPITimeout = time.Duration(120) * time.Second
 )
 
 func main() {
 
 	vaultName := flag.String("vaultName", "", "Name the the Azure Key Vault")
 	vaultKeyName := flag.String("vaultKeyName", "", "Name the the key to test for presence of")
-	clientID := flag.String("clientId", "", "(optional) Client Id of service principal to authenticate to key vault with")
-	clientSecret := flag.String("clientSecret", "", "(optional) Client secret of service principal)")
-	tenantID := flag.String("tenantID", "", "(optional) Tenant Id in which service principal exists")
 
 	flag.Parse()
 
@@ -30,16 +28,21 @@ func main() {
 		log.Fatal("Vault name and key vault must be specified")
 	}
 
-	token, err := getAccessToken(*tenantID, *clientID, *clientSecret, azure.PublicCloud)
+	err := os.Setenv(auth.Resource, keyVaultResourceURI)
 	if err != nil {
-		log.Fatalf("failed to get token: %v", err)
+		log.Fatal("Unable to set resource Id on environment " + err.Error())
+	}
+
+	authorizer, err := auth.NewAuthorizerFromEnvironment()
+	if err != nil {
+		log.Fatal("Unable to configure autorest authorizer from environment " + err.Error())
 	}
 
 	kvClient := keyvault.New()
-	kvClient.Authorizer = autorest.NewBearerAuthorizer(token)
+	kvClient.Authorizer = authorizer
 
 	log.Print("Getting Key Bundle")
-	ctx, _ := context.WithTimeout(context.Background(), time.Second*time.Duration(60))
+	ctx, _ := context.WithTimeout(context.Background(), defaultAzureAPITimeout)
 	keyBundle, err := kvClient.GetKey(ctx, fmt.Sprintf("https://%s.vault.azure.net/", *vaultName), *vaultKeyName, "")
 
 	if err != nil {
@@ -50,36 +53,4 @@ func main() {
 		log.Fatal("Unauthorized to retrieve key")
 	}
 	log.Print("Retrieved key bundle successfully")
-}
-
-// getAccessToken retrieves Azure API access token.
-func getAccessToken(tenantId string, clientID string, clientSecret string, environment azure.Environment) (*adal.ServicePrincipalToken, error) {
-
-	// Try to retrieve token with service principal credentials.
-	if len(clientID) > 0 && len(clientSecret) > 0 {
-		oauthConfig, err := adal.NewOAuthConfig(environment.ActiveDirectoryEndpoint, tenantId)
-		if err != nil {
-			return nil, fmt.Errorf("failed to retrieve OAuth config: %v", err)
-		}
-
-		token, err := adal.NewServicePrincipalToken(*oauthConfig, clientID, clientSecret, keyVaultResourceURI)
-		if err != nil {
-			return nil, fmt.Errorf("failed to create service principal token: %v", err)
-		}
-		return token, nil
-	}
-
-	log.Print("Getting v1 endpoint")
-	msiEndpoint, err := adal.GetMSIVMEndpoint()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get the managed service identity endpoint: %v", err)
-	}
-
-	log.Print("Getting service token from msi endpoint")
-	token, err := adal.NewServicePrincipalTokenFromMSI(msiEndpoint, keyVaultResourceURI)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create the managed service identity token: %v", err)
-	}
-	return token, nil
-
 }

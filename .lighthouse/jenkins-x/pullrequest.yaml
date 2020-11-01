@@ -230,7 +230,7 @@ spec:
           command:
           - /bin/sh
           - -c
-          image: gcr.io/jenkinsxio/builder-terraform:2.1.142-761
+          image: gcr.io/jenkinsxio/builder-terraform:2.1.150-771
           name: build-test-commands
           resources: {}
         - args:
@@ -246,7 +246,7 @@ spec:
           command:
           - /bin/sh
           - -c
-          image: gcr.io/jenkinsxio/builder-terraform:2.1.142-761
+          image: gcr.io/jenkinsxio/builder-terraform:2.1.150-771
           name: terraform-lint
           resources: {}
         - script: |
@@ -286,7 +286,7 @@ spec:
               secretKeyRef:
                 key: TFVAR_APEX_DOMAIN_RESOURCE_GROUP_NAME
                 name: azure-terraform-bdd-secret
-          image: gcr.io/jenkinsxio/builder-terraform:2.1.142-761
+          image: gcr.io/jenkinsxio/builder-terraform:2.1.150-771
           name: terratest
           resources: {}
         volumes:
