@@ -70,4 +70,10 @@ resource "kubernetes_namespace" "secrets_infra" {
     name = var.secrets_infra_namespace
   }
 
+  lifecycle {
+    ignore_changes = [
+      metadata[0].labels,
+    ]
+  }
+
 }
