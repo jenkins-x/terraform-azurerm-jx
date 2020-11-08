@@ -1,5 +1,4 @@
 resource "azurerm_container_registry" "acr" {
-  count               = var.create_registry ? 1 : 0
   name                = var.container_registry_name
   resource_group_name = var.resource_group
   location            = var.location
@@ -7,15 +6,13 @@ resource "azurerm_container_registry" "acr" {
 }
 
 resource "azurerm_role_assignment" "acrpull" {
-  count                = var.create_registry ? 1 : 0
-  scope                = azurerm_container_registry.acr.0.id
+  scope                = azurerm_container_registry.acr.id
   role_definition_name = "AcrPull"
   principal_id         = var.kubelet_identity_id
 }
 
 resource "azurerm_role_assignment" "acrpush" {
-  count                = var.create_registry ? 1 : 0
-  scope                = azurerm_container_registry.acr.0.id
+  scope                = azurerm_container_registry.acr.id
   role_definition_name = "AcrPush"
   principal_id         = var.kubelet_identity_id
 }

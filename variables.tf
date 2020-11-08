@@ -4,7 +4,7 @@ variable "cluster_name" {
 }
 variable "node_count" {
   type    = number
-  default = 1
+  default = 2
 }
 variable "node_size" {
   type    = string
@@ -140,11 +140,6 @@ variable "velero_ttl" {
 // ----------------------------------------------------------------------------
 // Container Registry
 // ----------------------------------------------------------------------------
-variable "create_registry" {
-  description = "Flag to indicate whether a container registry should be created"
-  type        = bool
-  default     = false
-}
 variable "container_registry_name" {
   description = "Name of container registry"
   type        = string
@@ -210,7 +205,7 @@ variable "webhook" {
 variable "version_stream_url" {
   description = "The URL for the version stream to use when booting Jenkins X. See https://jenkins-x.io/docs/concepts/version-stream/"
   type        = string
-  default     = "https://github.com/jenkins-x/jenkins-x-versions.git"
+  default     = ""
 }
 
 variable "version_stream_ref" {
