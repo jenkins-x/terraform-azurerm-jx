@@ -95,7 +95,6 @@ resource "azurerm_resource_group" "dns" {
 }
 
 resource "azurerm_resource_group" "registry" {
-  count    = var.create_registry ? 1 : 0
   name     = local.registry_resource_group_name
   location = var.location
 }
@@ -185,8 +184,7 @@ module "dns" {
 module "registry" {
   source                  = "./modules/registry"
   location                = var.location
-  resource_group          = var.create_registry ? azurerm_resource_group.registry.0.name : ""
-  create_registry         = var.create_registry
+  resource_group          = azurerm_resource_group.registry.name
   container_registry_name = local.container_registry_name
   kubelet_identity_id     = module.cluster.kubelet_identity_id
 }
@@ -250,8 +248,7 @@ locals {
     backup_container_url                  = module.backup.backup_container_url
 
     // Container Registry
-    create_registry = var.create_registry
-    registry_name   = var.create_registry ? "${local.container_registry_name}.azurecr.io" : ""
+    registry_name = "${local.container_registry_name}.azurecr.io"
 
     // Vault
     enable_vault                 = ! var.secret_management.enable_native
@@ -262,7 +259,7 @@ locals {
     vault_storage_container_name = module.secretstorage.storage_container_name
 
     version_stream_ref = var.version_stream_ref
-    version_stream_url = var.version_stream_url
+    version_stream_url = local.version_stream_url
     webhook            = var.webhook
   })
 

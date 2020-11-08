@@ -1,11 +1,17 @@
 package test
 
 import (
+	"fmt"
+
+	"github.com/Azure/azure-sdk-for-go/services/preview/containerregistry/runtime/2019-08-15-preview/containerregistry"
 	"github.com/Azure/azure-storage-blob-go/azblob"
+	"github.com/Azure/go-autorest/autorest"
+	"github.com/Azure/go-autorest/autorest/adal"
 	"github.com/gruntwork-io/terratest/modules/azure"
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+
 	"io/ioutil"
 	"os"
 	"path"
@@ -52,6 +58,8 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 	vaultName := terraform.Output(t, terraformOptions, "key_vault_name")
 	vaultContainerName := terraform.Output(t, terraformOptions, "vault_container_name")
 	vaultKeyName := terraform.Output(t, terraformOptions, "vault_key_name")
+	registryName := terraform.Output(t, terraformOptions, "container_registry_name")
+	tenantId := terraform.Output(t, terraformOptions, "tenant_id")
 
 	kubeConfigPath := path.Join(dirName, ".kubeconfig")
 	err := ioutil.WriteFile(kubeConfigPath, []byte(kubeConfigRaw), 500)
@@ -85,6 +93,8 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 			vaultContainerName,
 			credential)
 
+		verifyAzureContainerRegistry(t, registryName+".azurecr.io", tenantId)
+
 		// Check Vault Key Vault Access from within cluster by running Kubernetes job
 		clientSet, err := NewK8s(kubeConfigPath)
 
@@ -102,4 +112,31 @@ func TestTerraformBasicJxCluster(t *testing.T) {
 		}
 
 	}
+}
+
+func verifyAzureContainerRegistry(t *testing.T, name string, tenantId string) {
+
+	loginURI := "https://" + name
+	imageName := "testimage"
+	armAccessToken, err := getAzureADToken(ArmResource, "", "")
+
+	if err != nil {
+		t.Fatal("failed to get access token for Azure Resource Manager")
+	}
+
+	registryAccessToken, err := getRegistryAccessToken(armAccessToken.AccessToken, loginURI, name, tenantId, fmt.Sprintf("repository:%s:push,pull", imageName))
+
+	if err != nil {
+		t.Fatal("failed to get access token for Azure Container Registry")
+	}
+
+	blobClient := containerregistry.NewBlobClient(loginURI)
+	blobClient.Authorizer = autorest.NewBearerAuthorizer(&adal.Token{
+		AccessToken: registryAccessToken,
+	})
+
+	resp, err := blobClient.StartUpload(generateDefaultContext(AzureRmTimeout), imageName)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 202, resp.StatusCode)
 }

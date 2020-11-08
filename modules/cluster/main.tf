@@ -76,4 +76,8 @@ resource "kubernetes_namespace" "secrets_infra" {
     ]
   }
 
+  depends_on = [
+    azurerm_kubernetes_cluster.aks
+  ]
+
 }
