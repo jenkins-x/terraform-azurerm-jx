@@ -165,17 +165,18 @@ module "backup" {
 // ----------------------------------------------------------------------------
 
 module "dns" {
-  source                   = "./modules/dns"
-  resource_group_name      = var.external_dns_enabled ? azurerm_resource_group.dns.0.name : ""
-  apex_resource_group_name = var.apex_domain_resource_group_name
-  apex_domain              = var.apex_domain
-  domain_name              = local.domain_name
-  enabled                  = var.external_dns_enabled
-  jenkins_x_namespace      = module.cluster.jenkins_x_namespace
-  kubelet_identity_id      = module.cluster.kubelet_identity_id
-  subscription_id          = data.azurerm_client_config.current.subscription_id
-  tenant_id                = local.tenant_id
-  is_jx2                   = var.is_jx2
+  source                          = "./modules/dns"
+  resource_group_name             = var.external_dns_enabled ? azurerm_resource_group.dns.0.name : ""
+  apex_resource_group_name        = var.apex_domain_resource_group_name
+  apex_domain                     = var.apex_domain
+  domain_name                     = local.domain_name
+  enabled                         = var.external_dns_enabled
+  jenkins_x_namespace             = module.cluster.jenkins_x_namespace
+  kubelet_identity_id             = module.cluster.kubelet_identity_id
+  subscription_id                 = data.azurerm_client_config.current.subscription_id
+  tenant_id                       = local.tenant_id
+  is_jx2                          = var.is_jx2
+  apex_domain_integration_enabled = var.apex_domain_integration_enabled
 }
 
 // ----------------------------------------------------------------------------
@@ -231,6 +232,9 @@ locals {
     enable_external_dns  = var.external_dns_enabled
     domain               = module.dns.domain
     ignore_load_balancer = var.external_dns_enabled
+    dns_tenant_id        = module.dns.tenant_id
+    dns_subscription_id  = module.dns.subscription_id
+    dns_resource_group   = module.dns.resource_group_name
 
     // TLS
     enable_tls                 = var.tls.enable

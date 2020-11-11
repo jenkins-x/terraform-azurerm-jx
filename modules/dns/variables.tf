@@ -1,5 +1,8 @@
+variable "apex_domain_integration_enabled" {
+  type = bool
+}
 variable "enabled" {
-  type = string
+  type = bool
 }
 variable "apex_domain" {
   type = string

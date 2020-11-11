@@ -109,6 +109,10 @@ variable "external_dns_enabled" {
   type    = bool
   default = false
 }
+variable "apex_domain_integration_enabled" {
+  type    = bool
+  default = false
+}
 
 // ----------------------------------------------------------------------------
 // Velero/backup

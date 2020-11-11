@@ -36,6 +36,9 @@ output "domain_name" {
 output "fully_qualified_domain_name" {
   value = module.dns.domain
 }
+output "dns_name_servers" {
+  value = module.dns.name_servers
+}
 output "kube_admin_config_raw" {
   value     = module.cluster.kube_config_admin_raw
   sensitive = true
