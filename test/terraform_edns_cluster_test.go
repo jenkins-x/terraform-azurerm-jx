@@ -37,6 +37,7 @@ func TestTerraformEDnsWithApexDomainCluster(t *testing.T) {
 			"external_dns_enabled":            true,
 			"apex_domain":                     os.Getenv(ApexDomain),
 			"apex_domain_resource_group_name": os.Getenv(ApexDomainResourceGroup),
+			"apex_domain_integration_enabled": true,
 			"location":                        getDefaultAzureLocation(),
 		},
 		EnvVars: getTerraformEnvVars(),

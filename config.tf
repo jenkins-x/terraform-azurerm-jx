@@ -25,10 +25,8 @@ resource "kubernetes_config_map" "jenkins_x_requirements" {
 }
 
 locals {
-  secrets = list(
-    var.external_dns_enabled ? "kubectl create secret generic -n ${var.jenkins_x_namespace} ${module.dns.secret_name} --from-literal=azure.json='${module.dns.azure_json}' --dry-run -o yaml | kubectl apply -f -" : ""
-  )
-  create_secret   = var.secret_management.enable_native || var.external_dns_enabled
+  secrets         = []
+  create_secret   = false
   compact_secrets = compact(local.secrets)
 }
 

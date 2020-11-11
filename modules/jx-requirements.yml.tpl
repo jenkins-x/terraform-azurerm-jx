@@ -10,6 +10,13 @@ cluster:
   environmentGitOwner: "${git_owner_requirement_repos}"
   provider: aks
   registry: "${registry_name}"
+%{ if enable_external_dns }
+  azure:
+    dns:
+      tenantId: ${dns_tenant_id}
+      subscriptionId: ${dns_subscription_id}
+      resourceGroup: ${dns_resource_group}
+%{ endif }
 gitops: true
 environments:
   - key: dev

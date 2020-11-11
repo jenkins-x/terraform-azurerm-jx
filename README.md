@@ -85,6 +85,7 @@ The following sections provide a full list of configuration in- and output varia
 |:------:|-------------|:-----------:|:---------:|:-----:|
 | apex\_domain | The apex domain in to which to create delegation records for the `domain_name` | `string` | `""` | no |
 | apex\_domain\_resource\_group\_name | The resource group name in which the apex domain resides | `string` | `""` | no |
+| apex\_domain\_integration\_enabled | Flag to integrate DNS zone in to an existing apex Azure DNS zon. Effectively creates subdomain delegation record in apex zone so DNS is immediately operable via Terraform. If set to true, then `apex_domain` and `apex_domain_resource_group_name` must also be configured | `bool` | `false` | no |
 | cluster\_name | Variable to provide your desired name for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
 | cluster\_network\_model | Variable to define the network model for the cluster. Valid values are either `kubenet` or `azure` | `string` | `"kubenet"` | no |
 | cluster\_resource\_group\_name | The name of the resource group in to which to provision AKS managed cluster. The script will create a random name if this is empty | `string` | `""` | no |
@@ -138,6 +139,7 @@ The following sections provide a full list of configuration in- and output varia
 | dns\_prefix | The FQDN of the created cluster |
 | dns\_resource\_group | Resource group name in which DNS zone was created |
 | domain\_name | The subdomain that houses `jx` hosts |
+| dns\_name\_servers | Nameservers for the DNS zone created. Records should be provided to the parent domain administrators to create subdomain delegation records there |
 | env\_vars | Executable command to set jx boot required environment variables |
 | fully\_qualified\_domain\_name | The fully qualified domain name of the subdomain for 'jx' hosts |
 | jx\_requirements | The jx-requirements rendered output |
@@ -217,7 +219,7 @@ None currently. Check back later!
 
 ### Releasing
 
-At the moment, there is no release pipeline defined in [jenkins-x.yml](./jenkins-x.yml).
+At the moment, there is no release pipeline defined.
 A Terraform release does not require building an artifact; only a tag needs to be created and pushed.
 To make this task easier and there is a helper script `release.sh` which simplifies this process and creates the changelog as well:
 
