@@ -156,19 +156,13 @@ variable "registry_resource_group_name" {
 }
 
 // ----------------------------------------------------------------------------
-// Vault
+// Secrets
 // ----------------------------------------------------------------------------
 
-variable "secret_management" {
-  type = object({
-    enable_native       = bool,
-    resource_group_name = string
-  })
-  description = "enable_native set to true will use native storage of secrets in Key Vault and not use Hashicorp Vault. resource_group - name of resource group in which to provision secret infrastructure"
-  default = {
-    enable_native       = false,
-    resource_group_name = "",
-  }
+variable "secrets_resource_group_name" {
+  type        = string
+  description = "Name of resource group in which to provision secret infrastructure"
+  default     = ""
 }
 
 // ----------------------------------------------------------------------------
