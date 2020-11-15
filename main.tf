@@ -207,7 +207,7 @@ module "secretstorage" {
   source                       = "./modules/secretstorage"
   cluster_id                   = local.cluster_id
   cluster_name                 = local.cluster_name
-  enable_native                = var.secret_management.enable_native
+  enable_native                = false // TODO - Hard code to false for now given we need to do more work with jx3 to support native secrets
   enable_workload_identity     = var.enable_workload_identity
   identity_resource_group_name = local.identity_resource_group_name
   kubelet_identity_id          = module.cluster.kubelet_identity_id
@@ -265,7 +265,7 @@ locals {
     registry_name = "${local.container_registry_name}.azurecr.io"
 
     // Vault
-    enable_vault                 = ! var.secret_management.enable_native
+    enable_vault                 = true // TODO - Hard code for now as vault is the only jx3 supported store
     vault_tenant_id              = local.tenant_id
     vault_keyvault_name          = module.secretstorage.keyvault_name
     vault_key_name               = module.secretstorage.key_name

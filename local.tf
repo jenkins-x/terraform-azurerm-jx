@@ -23,7 +23,7 @@ locals {
   domain_name                      = var.domain_name != "" ? var.domain_name : replace("${local.prefix}${random_pet.pet.id}", "-", "")
   registry_resource_group_name     = var.registry_resource_group_name != "" ? var.registry_resource_group_name : "${local.prefix}-rg-registry-${random_pet.pet.id}"
   container_registry_name          = var.container_registry_name != "" ? var.container_registry_name : replace("${local.prefix}${random_pet.pet.id}", "-", "")
-  secrets_resource_group_name      = var.secret_management.resource_group_name != "" ? var.secret_management.resource_group_name : "${local.prefix}-rg-secrets-${random_pet.pet.id}"
+  secrets_resource_group_name      = var.secrets_resource_group_name != "" ? var.secrets_resource_group_name : "${local.prefix}-rg-secrets-${random_pet.pet.id}"
 
   version_stream_url = var.version_stream_url != "" ? var.version_stream_url : var.is_jx2 ? "https://github.com/jenkins-x/jenkins-x-versions.git" : "https://github.com/jenkins-x/jxr-versions.git"
 

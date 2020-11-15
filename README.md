@@ -114,7 +114,7 @@ The following sections provide a full list of configuration in- and output varia
 | node\_count | The number of worker nodes to use for the cluster | `number` | `1` | no |
 | node\_size | The size of the worker node to use for the cluster | `string` | `"Standard_B2ms"` | no |
 | registry\_resource\_group\_name | Name of resource group (to provision) in which to create registry. The script will create a random name if this is empty | `string` | `""` | no |
-| secret\_management | Configures whether native secret storage is enabled and resource group to use. enable_native = true provisions Key vault store used by Kubernetes External Secrets. enable_native  = false uses Hashicorp vault (still backed by Azure Key Vault) |  `object` | `{ enable_native = false, resource_group_name = "" }` | no |
+| secrets\_resource\_group\_name | The name of the resource group to create in which to provision secret infrastructure, i.e. Key Vault|  `string` | `""` | no |
 | subnet\_cidr | The CIDR of the provisioned  subnet within the `vnet_cidr` to to which worker nodes are placed | `string` | `"10.8.0.0/24"` | no |
 | subnet\_name | The name of the subnet in Azure to be created. The script will create a random name if this is empty | `string` | `""` | no |
 | tls | enable - Flag to enable TLS. email - Email used by Let's Encrypt | `object` | `{ enable = false, email = "" }` | no |
