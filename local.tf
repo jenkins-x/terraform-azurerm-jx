@@ -8,7 +8,6 @@ resource "random_id" "random" {
 locals {
   prefix                           = "tf-jx"
   alphanum_regex                   = "[[:alnum:]]+"
-  secret_infra_namespace           = "secret-infra"
   identity_resource_group_name     = module.cluster.node_resource_group
   tenant_id                        = data.azurerm_client_config.current.tenant_id
   cluster_id                       = random_id.random.hex
@@ -31,7 +30,6 @@ locals {
   vault_identity_name = "key-vault-${local.cluster_id}"
   identities = var.enable_workload_identity ? [{
     name       = local.vault_identity_name
-    namespace  = local.secret_infra_namespace
     resourceId = module.secretstorage.secret_workload_identity.resourceId
     clientId   = module.secretstorage.secret_workload_identity.clientId
     binding = {

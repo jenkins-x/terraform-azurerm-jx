@@ -25,3 +25,6 @@ output "kubelet_identity_id" {
 output "jenkins_x_namespace" {
   value = var.jenkins_x_namespace
 }
+output "kubernetes_cluster" {
+  value = azurerm_kubernetes_cluster.aks
+}

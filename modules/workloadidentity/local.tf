@@ -4,7 +4,7 @@ locals {
     <<EOF
 - name: ${o.name}
   type: 0
-  namespace: ${o.namespace}
+  namespace: ${local.workload_identity_namespace}
   resourceID: ${o.resourceId}
   clientID: ${o.clientId}
   binding:

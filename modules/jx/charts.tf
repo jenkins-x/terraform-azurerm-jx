@@ -1,5 +1,5 @@
 resource "helm_release" "jx-git-operator" {
-  count            = var.is_jx2 ? 0 : 1
+  count            = var.enabled ? 1 : 0
   name             = "jx-git-operator"
   chart            = "jx-git-operator"
   namespace        = "jx-git-operator"
@@ -31,6 +31,15 @@ resource "helm_release" "jx-git-operator" {
     ignore_changes = all
   }
   depends_on = [
-    azurerm_kubernetes_cluster.aks
+    var.kubernetes_cluster
+  ]
+}
+
+module "jx-health" {
+  count  = var.enabled ? 1 : 0
+  source = "github.com/jenkins-x/terraform-jx-health?ref=main"
+
+  depends_on = [
+    var.kubernetes_cluster
   ]
 }

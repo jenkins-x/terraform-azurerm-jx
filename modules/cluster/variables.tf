@@ -39,18 +39,6 @@ variable "cluster_network_model" {
 variable "is_jx2" {
   type = bool
 }
-variable "jx_git_url" {
-  type = string
-}
-variable "jx_bot_username" {
-  type = string
-}
-variable "jx_bot_token" {
-  type = string
-}
-variable "secrets_infra_namespace" {
-  type = string
-}
 variable "enable_log_analytics" {
   type = bool
 }

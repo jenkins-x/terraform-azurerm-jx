@@ -33,7 +33,8 @@ func TestTerraformWithBackupEnabledTest(t *testing.T) {
 			"enable_backup": true,
 			"location":      getDefaultAzureLocation(),
 		},
-		EnvVars: getTerraformEnvVars(),
+		EnvVars:    getTerraformEnvVars(),
+		MaxRetries: 5,
 	}
 
 	// Clean up resources with "terraform destroy" at the end of the test.
