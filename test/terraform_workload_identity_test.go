@@ -35,7 +35,8 @@ func TestTerraformWorkloadIdentity(t *testing.T) {
 			"enable_workload_identity": true,
 			"is_jx2":                   false,
 		},
-		EnvVars: getTerraformEnvVars(),
+		EnvVars:    getTerraformEnvVars(),
+		MaxRetries: 5,
 	}
 
 	// Clean up resources with "terraform destroy" at the end of the test.

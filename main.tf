@@ -123,12 +123,22 @@ module "cluster" {
   cluster_network_model    = var.cluster_network_model
   node_resource_group_name = local.cluster_node_resource_group_name
   is_jx2                   = var.is_jx2
-  jx_git_url               = var.jx_git_url
-  jx_bot_username          = var.jx_bot_username
-  jx_bot_token             = var.jx_bot_token
-  secrets_infra_namespace  = local.secret_infra_namespace
   enable_log_analytics     = var.enable_log_analytics
   logging_retention_days   = var.logging_retention_days
+}
+
+
+// ----------------------------------------------------------------------------
+// Setup jx pre-requisites in cluster
+// ----------------------------------------------------------------------------
+
+module "jx" {
+  source             = "./modules/jx"
+  jx_bot_username    = var.jx_bot_username
+  jx_git_url         = var.jx_git_url
+  jx_bot_token       = var.jx_bot_token
+  enabled            = ! var.is_jx2
+  kubernetes_cluster = module.cluster.kubernetes_cluster
 }
 
 // ----------------------------------------------------------------------------

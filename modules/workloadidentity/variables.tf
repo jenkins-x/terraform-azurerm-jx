@@ -10,7 +10,6 @@ variable "enable" {
 variable "identities" {
   type = list(object({
     name       = string
-    namespace  = string
     resourceId = string
     clientId   = string
     binding = object({

@@ -63,21 +63,3 @@ resource "kubernetes_namespace" "jenkins_x_namespace" {
     azurerm_kubernetes_cluster.aks
   ]
 }
-
-resource "kubernetes_namespace" "secrets_infra" {
-  count = var.is_jx2 ? 0 : 1
-  metadata {
-    name = var.secrets_infra_namespace
-  }
-
-  lifecycle {
-    ignore_changes = [
-      metadata[0].labels,
-    ]
-  }
-
-  depends_on = [
-    azurerm_kubernetes_cluster.aks
-  ]
-
-}
