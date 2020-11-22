@@ -9,7 +9,9 @@ locals {
   prefix                           = "tf-jx"
   alphanum_regex                   = "[[:alnum:]]+"
   identity_resource_group_name     = module.cluster.node_resource_group
-  tenant_id                        = data.azurerm_client_config.current.tenant_id
+  tenant_id                        = data.azurerm_subscription.current.tenant_id
+  subscription_id                  = data.azurerm_subscription.current.subscription_id
+  subscription_resource_id         = data.azurerm_subscription.current.id
   cluster_id                       = random_id.random.hex
   kubernetes_external_secret_name  = "kubernetes-external-secrets-azure-key-vault"
   cluster_name                     = var.cluster_name != "" ? var.cluster_name : replace("${local.prefix}${random_pet.pet.id}", "-", "")
@@ -30,8 +32,8 @@ locals {
   vault_identity_name = "key-vault-${local.cluster_id}"
   identities = var.enable_workload_identity ? [{
     name       = local.vault_identity_name
-    resourceId = module.secretstorage.secret_workload_identity.resourceId
-    clientId   = module.secretstorage.secret_workload_identity.clientId
+    resourceId = azurerm_user_assigned_identity.vault_identity.id
+    clientId   = azurerm_user_assigned_identity.vault_identity.client_id
     binding = {
       name     = local.vault_identity_name
       selector = local.vault_identity_name

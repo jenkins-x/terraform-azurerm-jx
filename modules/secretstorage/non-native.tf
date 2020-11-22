@@ -14,14 +14,14 @@ resource "azurerm_storage_container" "vault" {
 }
 
 resource "null_resource" "delay" {
-  depends_on = [azurerm_key_vault_access_policy.terraform_vault_access_policy]
+  depends_on = [azurerm_key_vault_access_policy.vault_access_policy]
   provisioner "local-exec" {
     command = "sleep 10"
   }
 }
 
 resource "azurerm_key_vault_key" "generated" {
-  depends_on   = [azurerm_key_vault_access_policy.terraform_vault_access_policy, null_resource.delay]
+  depends_on   = [azurerm_key_vault_access_policy.vault_access_policy, null_resource.delay]
   count        = var.enable_native ? 0 : 1
   name         = local.key_name
   key_vault_id = azurerm_key_vault.vault.id

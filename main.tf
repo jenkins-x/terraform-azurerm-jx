@@ -71,9 +71,6 @@ provider "helm" {
 data "azurerm_subscription" "current" {
 }
 
-data "azurerm_client_config" "current" {
-}
-
 // ----------------------------------------------------------------------------
 // Setup Azure Resource Groups
 // ----------------------------------------------------------------------------
@@ -132,13 +129,21 @@ module "cluster" {
 // Setup jx pre-requisites in cluster
 // ----------------------------------------------------------------------------
 
+
+
 module "jx" {
-  source             = "./modules/jx"
-  jx_bot_username    = var.jx_bot_username
-  jx_git_url         = var.jx_git_url
-  jx_bot_token       = var.jx_bot_token
-  enabled            = ! var.is_jx2
-  kubernetes_cluster = module.cluster.kubernetes_cluster
+  source                         = "./modules/jx"
+  jx_bot_username                = var.jx_bot_username
+  jx_git_url                     = var.jx_git_url
+  jx_bot_token                   = var.jx_bot_token
+  enabled                        = ! var.is_jx2
+  kubernetes_cluster             = module.cluster.kubernetes_cluster
+  tenant_id                      = local.tenant_id
+  subscription_id                = local.subscription_id
+  subscription_resource_id       = local.subscription_resource_id
+  jx_health_client_id            = local.jx_health_client_id
+  jx_health_client_secret        = local.jx_health_client_secret
+  jx_health_service_principal_id = local.jx_health_service_principal_id
 }
 
 // ----------------------------------------------------------------------------
@@ -165,7 +170,7 @@ module "backup" {
   resource_group        = module.cluster.node_resource_group
   cluster_id            = local.cluster_id
   cluster_name          = local.cluster_name
-  subscription_id       = data.azurerm_client_config.current.subscription_id
+  subscription_id       = local.subscription_id
   tenant_id             = local.tenant_id
   storage_account_regex = local.alphanum_regex
 }
@@ -183,7 +188,7 @@ module "dns" {
   enabled                         = var.external_dns_enabled
   jenkins_x_namespace             = module.cluster.jenkins_x_namespace
   kubelet_identity_id             = module.cluster.kubelet_identity_id
-  subscription_id                 = data.azurerm_client_config.current.subscription_id
+  subscription_id                 = local.subscription_id
   tenant_id                       = local.tenant_id
   is_jx2                          = var.is_jx2
   apex_domain_integration_enabled = var.apex_domain_integration_enabled
@@ -208,13 +213,11 @@ module "secretstorage" {
   cluster_id                   = local.cluster_id
   cluster_name                 = local.cluster_name
   enable_native                = false // TODO - Hard code to false for now given we need to do more work with jx3 to support native secrets
-  enable_workload_identity     = var.enable_workload_identity
-  identity_resource_group_name = local.identity_resource_group_name
-  kubelet_identity_id          = module.cluster.kubelet_identity_id
   location                     = var.location
   resource_group_name          = azurerm_resource_group.secrets.name
   storage_account_regex        = local.alphanum_regex
   tenant_id                    = local.tenant_id
+  key_vault_acls_principal_ids = local.key_vault_acls_principal_ids
 }
 
 // ----------------------------------------------------------------------------

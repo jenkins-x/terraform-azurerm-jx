@@ -20,13 +20,6 @@ variable "tenant_id" {
   description = "Tenant Id of the Azure AD domain resources are being created in"
   type        = string
 }
-variable "kubelet_identity_id" {
-  description = "Kubelet managed identity id"
-  type        = string
-}
-variable "enable_workload_identity" {
-  type = bool
-}
-variable "identity_resource_group_name" {
-  type = string
+variable "key_vault_acls_principal_ids" {
+  type = map(string)
 }

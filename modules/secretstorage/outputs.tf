@@ -13,9 +13,3 @@ output "key_name" {
 output "keyvault_name" {
   value = azurerm_key_vault.vault.name
 }
-output "secret_workload_identity" {
-  value = var.enable_workload_identity ? {
-    resourceId = var.enable_workload_identity ? azurerm_user_assigned_identity.key_vault_identity.0.id : ""
-    clientId   = var.enable_workload_identity ? azurerm_user_assigned_identity.key_vault_identity.0.client_id : ""
-  } : {}
-}

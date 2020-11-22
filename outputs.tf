@@ -1,6 +1,6 @@
 output "subscription_id" {
   description = "Id of subscription in which resources are created"
-  value       = data.azurerm_subscription.current.subscription_id
+  value       = local.subscription_id
 }
 output "jx_requirements" {
   description = "The jx-requirements rendered output"
@@ -47,7 +47,7 @@ output "container_registry_name" {
   value = local.container_registry_name
 }
 output "tenant_id" {
-  value = data.azurerm_client_config.current.tenant_id
+  value = data.azurerm_subscription.current.tenant_id
 }
 output "vault_storage_account_key" {
   value     = module.secretstorage.storage_account_key
