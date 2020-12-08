@@ -92,7 +92,6 @@ The following sections provide a full list of configuration in- and output varia
 | cluster\_node\_resource\_group\_name | Resource group name in which to provision AKS cluster nodes. The script will create a random name if this is empty | `string` | `""` | no |
 | cluster\_version | Kubernetes version to use for the AKS cluster. | `string` | `"1.18.8"` | no |
 | container\_registry\_name | Name of container registry to provision. The script will create a random name if this is empty | `string` | `""` | no |
-| create\_registry | Flag to indicate whether an Azure Container Registry should be provisioned | `bool` | `false` | no |
 | dev\_env\_approvers | List of git users allowed to approve pull request for dev environment repository | `list(string)` | `[]` | no |
 | domain\_name | The domain for external dns to create records in. The script will create a random name if this is empty | `string` | `""` | no |
 | dns\_prefix | DNS prefix for the cluster. The script will create a random name if this is empty | `string` | `""` | no |
