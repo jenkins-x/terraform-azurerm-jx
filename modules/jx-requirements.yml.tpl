@@ -18,10 +18,6 @@ cluster:
       resourceGroup: ${dns_resource_group}
 %{ endif }
 gitops: true
-environments:
-  - key: dev
-  - key: staging
-  - key: production
 ingress:
   domain: "${domain}"
   ignoreLoadBalancer: ${ignore_load_balancer}
